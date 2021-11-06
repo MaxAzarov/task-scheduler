@@ -102,6 +102,7 @@ router.get(
     failureRedirect: "/",
     failureFlash: true,
     successRedirect: "/",
+    session: false,
   })
 );
 
@@ -109,6 +110,7 @@ router.post(
   "/callback",
   passport.authenticate("azuread-openidconnect", {
     successRedirect: "/",
+    session: false,
   }),
   function (req, res) {
     console.log("req: ", req.user);

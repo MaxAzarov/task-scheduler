@@ -11,23 +11,23 @@ const {
   GOOGLE_CALLBACK_URL = "",
 } = process.env;
 
-passport.serializeUser(function (user, done) {
-  /*
-    From the user take just the id (to minimize the cookie size) and just pass the id of the user
-    to the done callback
-    PS: You dont have to do it like this its just usually done like this
-    */
-  done(null, user);
-});
+// passport.serializeUser(function (user, done) {
+//   /*
+//     From the user take just the id (to minimize the cookie size) and just pass the id of the user
+//     to the done callback
+//     PS: You dont have to do it like this its just usually done like this
+//     */
+//   done(null, user);
+// });
 
-passport.deserializeUser(function (user: any, done) {
-  /*
-    Instead of user this function usually recives the id
-    then you use the id to select the user from the db and pass the user obj to the done callback
-    PS: You can later access this data in any routes in: req.user
-    */
-  done(null, user);
-});
+// passport.deserializeUser(function (user: any, done) {
+//   /*
+//     Instead of user this function usually recives the id
+//     then you use the id to select the user from the db and pass the user obj to the done callback
+//     PS: You can later access this data in any routes in: req.user
+//     */
+//   done(null, user);
+// });
 
 passport.use(
   new GoogleStrategy(
@@ -57,23 +57,27 @@ router.get(
     scope: [
       "profile",
       "email",
-      // "https://www.googleapis.com/auth/calendar",
-      // "https://www.googleapis.com/auth/calendar.readonly",
-      // "https://www.googleapis.com/auth/calendar.events",
-      // "https://www.googleapis.com/auth/calendar.events.readonly",
-      // "https://www.googleapis.com/auth/calendar.settings.readonly",
-      // "https://www.googleapis.com/auth/calendar.addons.execute",
-      "calendar",
+      "https://www.googleapis.com/auth/calendar",
+      "https://www.googleapis.com/auth/calendar.readonly",
+      "https://www.googleapis.com/auth/calendar.events",
+      "https://www.googleapis.com/auth/calendar.events.readonly",
+      "https://www.googleapis.com/auth/calendar.settings.readonly",
+      "https://www.googleapis.com/auth/calendar.addons.execute",
+      // "calendar",
     ],
     accessType: "offline",
     // prompt: "select_account",
     prompt: "consent",
+    session: false,
   })
 );
 
 router.get(
   "/callback",
-  passport.authenticate("google", { failureRedirect: "/failed" }),
+  passport.authenticate("google", {
+    failureRedirect: "/failed",
+    session: false,
+  }),
   function (req, res) {
     // Successful authentication, redirect home.
     res.redirect("/");
