@@ -6,7 +6,6 @@ module.exports = {
       id: {
         allowNull: false,
         type: Sequelize.UUID,
-        // autoIncrement: true,
         primaryKey: true,
       },
       name: {
