@@ -1,4 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
+import Event from "./models/Event";
+import Integration from "./models/Integration";
+import User from "./models/User";
 
 const sequelize = new Sequelize({
   dialect: "postgres",
@@ -9,6 +12,5 @@ const sequelize = new Sequelize({
 });
 
 export default sequelize;
-const Models = sequelize.models;
 
-export { Models };
+export { Event, Integration, User };

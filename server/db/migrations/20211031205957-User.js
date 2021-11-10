@@ -6,6 +6,7 @@ module.exports = {
       id: {
         allowNull: false,
         type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
       },
       name: {
@@ -32,10 +33,10 @@ module.exports = {
       },
       password: {
         type: Sequelize.STRING,
-        validate: {
-          notEmpty: true,
-          len: [1, 40],
-        },
+        // validate: {
+        //   notEmpty: true,
+        //   len: [1, 40],
+        // },
       },
       createdAt: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
       updatedAt: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },

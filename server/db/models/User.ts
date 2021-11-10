@@ -19,8 +19,8 @@ import Event from "./Event";
 class User extends Model<User> {
   @PrimaryKey
   @AllowNull(false)
-  @Default(DataType.UUID)
-  @Column(DataType.UUID)
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUIDV4)
   id!: number;
 
   @Length({ min: 2, max: 20 })
@@ -38,8 +38,7 @@ class User extends Model<User> {
   @Column(DataType.STRING)
   email!: string;
 
-  @Length({ min: 2 })
-  @AllowNull(false)
+  @AllowNull(true)
   @Column(DataType.STRING)
   password!: string;
 

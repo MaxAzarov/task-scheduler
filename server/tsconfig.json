@@ -100,7 +100,7 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "types": ["chai", "mocha", "node"],
-    "typeRoots": ["./node_modules/@types", "./types"]
+    "typeRoots": ["./node_modules/@types"]
   },
   "exclude": ["./node_modules/", "./dist/"],
   "ts-node": { "files": true }

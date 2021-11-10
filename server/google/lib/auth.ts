@@ -1,7 +1,12 @@
 import passport from "passport";
 import { Router } from "express";
+import { path } from "ramda";
 
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { Profile, Strategy as GoogleStrategy } from "passport-google-oauth20";
+import UserService from "../../services/User";
+import IntegrationService from "../../services/Integration";
+import { User } from "../../db/sequelize";
+import { VerifyCallback } from "passport-azure-ad";
 
 const router = Router();
 
@@ -11,42 +16,58 @@ const {
   GOOGLE_CALLBACK_URL = "",
 } = process.env;
 
-// passport.serializeUser(function (user, done) {
-//   /*
-//     From the user take just the id (to minimize the cookie size) and just pass the id of the user
-//     to the done callback
-//     PS: You dont have to do it like this its just usually done like this
-//     */
-//   done(null, user);
-// });
-
-// passport.deserializeUser(function (user: any, done) {
-//   /*
-//     Instead of user this function usually recives the id
-//     then you use the id to select the user from the db and pass the user obj to the done callback
-//     PS: You can later access this data in any routes in: req.user
-//     */
-//   done(null, user);
-// });
-
 passport.use(
   new GoogleStrategy(
     {
-      //   clientID: "1051.............",
       clientID: GOODLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: GOOGLE_CALLBACK_URL,
     },
-    function (accessToken: string, refreshToken, profile, done) {
-      console.log("🚀 ~ file: auth.ts ~ line 31 ~ accessToken", accessToken);
-      console.log("🚀 ~ file: auth.ts ~ line 31 ~ refreshToken", refreshToken);
-      console.log("🚀 ~ file: auth.ts ~ line 31 ~ profile", profile);
-      /*
-     use the profile info (mainly profile id) to check if the user is registerd in ur db
-     If yes select the user and pass him to the done callback
-     If not create the user and then select him and pass to callback
-    */
-      return done(null, profile);
+    async function (
+      accessToken: string,
+      refreshToken: string,
+      profile: Profile,
+      done: VerifyCallback
+    ) {
+      const email = path(["emails", 0, "value"], profile) as string;
+
+      const { name } = profile;
+
+      const { familyName, givenName } = name as {
+        familyName: string;
+        givenName: string;
+      };
+      let user: User | undefined;
+      // user
+      try {
+        user = await UserService.checkIfUserExistsByEmail(email);
+      } catch (e) {
+        try {
+          user = await UserService.addNewUser(givenName, familyName, email);
+        } catch (e) {
+          console.log("e: ", e);
+        }
+      }
+
+      try {
+        await IntegrationService.checkIfIntegrationExists(
+          user!.id as any,
+          "google-calendar"
+        );
+      } catch (e) {
+        try {
+          await IntegrationService.createNewIntegration(
+            "google-calendar",
+            user!.id as any,
+            accessToken,
+            refreshToken
+          );
+        } catch (e) {
+          console.log("e: ", e);
+        }
+      }
+
+      return done(null, user);
     }
   )
 );
@@ -66,7 +87,6 @@ router.get(
       // "calendar",
     ],
     accessType: "offline",
-    // prompt: "select_account",
     prompt: "consent",
     session: false,
   })
@@ -79,8 +99,8 @@ router.get(
     session: false,
   }),
   function (req, res) {
-    // Successful authentication, redirect home.
-    res.redirect("/");
+    console.log("req.user: ", req.user);
+    res.send(req.user);
   }
 );
 

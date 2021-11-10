@@ -6,6 +6,7 @@ module.exports = {
       id: {
         allowNull: false,
         type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
       },
       type: {
@@ -35,6 +36,6 @@ module.exports = {
     });
   },
   down: async (queryInterface) => {
-    return Promise.all([queryInterface.dropTable("User")]);
+    return Promise.all([queryInterface.dropTable("Integration")]);
   },
 };

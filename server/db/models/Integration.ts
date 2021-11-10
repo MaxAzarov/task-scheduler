@@ -19,7 +19,7 @@ class Integration extends Model<Integration> {
   @PrimaryKey
   @AllowNull(false)
   @Default(DataType.UUIDV4)
-  @Column(DataType.UUID)
+  @Column(DataType.UUIDV4)
   id!: number;
 
   @AllowNull(false)
@@ -28,7 +28,7 @@ class Integration extends Model<Integration> {
 
   @ForeignKey(() => User)
   @Column(DataType.UUID)
-  user_id!: number;
+  user_id!: string;
 
   @BelongsTo(() => User)
   user!: User;
@@ -44,6 +44,7 @@ class Integration extends Model<Integration> {
   @Column(DataType.STRING)
   calendar_id!: string;
 
+  @AllowNull(true)
   @Column(DataType.STRING)
   timezone!: string;
 }
