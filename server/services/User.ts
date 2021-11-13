@@ -7,18 +7,14 @@ class UserService {
    * check if user exists in db by email
    * @returns user or error
    */
-  async checkIfUserExistsByEmail(email: string): Promise<User> {
+  async checkIfUserExistsByEmail(email: string): Promise<User | null> {
     const user = await User.findOne({
       where: {
         email,
       },
     });
 
-    if (user) {
-      return user;
-    } else {
-      throw new Error("User not exists!");
-    }
+    return user;
   }
 
   /**
@@ -37,6 +33,16 @@ class UserService {
     } else {
       throw new Error("User not exists!");
     }
+  }
+
+  async findUserByEmail(email: string): Promise<User | null> {
+    const user: User | null = await User.findOne({
+      where: {
+        email,
+      },
+    });
+
+    return user;
   }
 
   async addNewUser(

@@ -45,9 +45,6 @@ class Event extends Model<Event> {
   @BelongsTo(() => Integration)
   integration!: Integration;
 
-  @Column(DataType.ENUM("google-calendar", "microsoft-calendar"))
-  integration_type!: string;
-
   @Column(DataType.STRING)
   body!: string;
 

@@ -9,6 +9,7 @@ import {
   BelongsTo,
   PrimaryKey,
 } from "sequelize-typescript";
+import { Services } from "../../constants/services";
 import User from "./User";
 
 @Table({
@@ -23,7 +24,7 @@ class Integration extends Model<Integration> {
   id!: number;
 
   @AllowNull(false)
-  @Column(DataType.ENUM("google-calendar", "microsoft-calendar"))
+  @Column(DataType.ENUM(Services.googleCalendar, Services.microsoftCalendar))
   type!: string;
 
   @ForeignKey(() => User)

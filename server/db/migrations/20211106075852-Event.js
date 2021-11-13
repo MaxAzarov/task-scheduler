@@ -37,10 +37,6 @@ module.exports = {
           model: "Integration",
         },
       },
-      integration_type: {
-        type: Sequelize.ENUM,
-        values: ["google-calendar", "microsoft-calendar"],
-      },
       event_id: {
         type: Sequelize.STRING,
       },

@@ -1,4 +1,4 @@
-import { Model } from "sequelize/types";
+import { Services } from "../constants/services";
 import { Integration } from "../db/sequelize";
 
 class IntegrationService {
@@ -6,8 +6,8 @@ class IntegrationService {
 
   async checkIfIntegrationExists(
     userId: string,
-    integrationType: "google-calendar" | "microsoft-calendar"
-  ): Promise<Integration> {
+    integrationType: Services
+  ): Promise<Integration | null> {
     const integration = await Integration.findOne({
       where: {
         user_id: userId,
@@ -15,17 +15,11 @@ class IntegrationService {
       },
     });
 
-    if (integration) {
-      return integration;
-    } else {
-      throw new Error(
-        `Integration ${integrationType} for user ${userId} does not exist!`
-      );
-    }
+    return integration;
   }
 
   async createNewIntegration(
-    type: "google-calendar" | "microsoft-calendar",
+    type: Services,
     user_id: string,
     access_token: string,
     refresh_token: string,
@@ -38,11 +32,8 @@ class IntegrationService {
       refresh_token,
       timezone,
     } as any);
-    if (newIntegration) {
-      return newIntegration;
-    } else {
-      throw new Error(`Can not create integration!`);
-    }
+
+    return newIntegration;
   }
 }
 

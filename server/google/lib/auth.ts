@@ -1,12 +1,13 @@
 import passport from "passport";
 import { Router } from "express";
 import { path } from "ramda";
-
 import { Profile, Strategy as GoogleStrategy } from "passport-google-oauth20";
 import UserService from "../../services/User";
 import IntegrationService from "../../services/Integration";
 import { User } from "../../db/sequelize";
 import { VerifyCallback } from "passport-azure-ad";
+import AuthService from "./../../services/Auth";
+import { Services } from "../../constants/services";
 
 const router = Router();
 
@@ -37,8 +38,7 @@ passport.use(
         familyName: string;
         givenName: string;
       };
-      let user: User | undefined;
-      // user
+      let user: User | null;
       try {
         user = await UserService.checkIfUserExistsByEmail(email);
       } catch (e) {
@@ -52,12 +52,12 @@ passport.use(
       try {
         await IntegrationService.checkIfIntegrationExists(
           user!.id as any,
-          "google-calendar"
+          Services.googleCalendar
         );
       } catch (e) {
         try {
           await IntegrationService.createNewIntegration(
-            "google-calendar",
+            Services.googleCalendar,
             user!.id as any,
             accessToken,
             refreshToken
@@ -67,7 +67,7 @@ passport.use(
         }
       }
 
-      return done(null, user);
+      return done(null, user! as any);
     }
   )
 );
@@ -84,7 +84,6 @@ router.get(
       "https://www.googleapis.com/auth/calendar.events.readonly",
       "https://www.googleapis.com/auth/calendar.settings.readonly",
       "https://www.googleapis.com/auth/calendar.addons.execute",
-      // "calendar",
     ],
     accessType: "offline",
     prompt: "consent",
@@ -99,8 +98,13 @@ router.get(
     session: false,
   }),
   function (req, res) {
-    console.log("req.user: ", req.user);
-    res.send(req.user);
+    if (req.user) {
+      const { email, id } = req.user as User;
+      const token = AuthService.issueToken(email, id);
+      res.redirect(`http://localhost:3000?token=${token}`);
+    }
+
+    res.redirect(`http://localhost:3000`);
   }
 );
 

@@ -2,12 +2,12 @@ import passport from "passport";
 import { OIDCStrategy } from "passport-azure-ad";
 import dotenv from "dotenv";
 import UserService from "../../services/User";
-
 import { Router } from "express";
-import simpleOAuth from "simple-oauth2";
 import getUserDetails from "../helpers/getUserDetails";
 import IntegrationService from "./../../services/Integration";
 import { User } from "../../db/sequelize";
+import AuthService from "./../../services/Auth";
+import { Services } from "../../constants/services";
 const router = Router();
 
 dotenv.config();
@@ -22,22 +22,6 @@ const {
   OAUTH_AUTHORIZE_ENDPOINT = "",
   OAUTH_TOKEN_ENDPOINT = "",
 } = process.env;
-console.log(
-  "🚀 ~ file: auth.ts ~ line 15 ~ OAUTH_REDIRECT_URI",
-  OAUTH_REDIRECT_URI
-);
-
-let oauth2 = (simpleOAuth as any).create({
-  client: {
-    id: OAUTH_APP_ID,
-    secret: OAUTH_APP_PASSWORD,
-  },
-  auth: {
-    tokenHost: OAUTH_AUTHORITY,
-    authorizePath: OAUTH_AUTHORIZE_ENDPOINT,
-    tokenPath: OAUTH_TOKEN_ENDPOINT,
-  },
-});
 
 passport.use(
   new OIDCStrategy(
@@ -57,7 +41,7 @@ passport.use(
       iss: any,
       sub: any,
       profile: any,
-      accessToken: any,
+      accessToken: string,
       refreshToken: string,
       params: any,
       done: any
@@ -65,7 +49,7 @@ passport.use(
       if (!profile.oid) {
         return done(new Error("No OID found in user profile."));
       }
-      let newUser: User | undefined;
+      let newUser: User | null;
 
       try {
         const user = await getUserDetails(accessToken);
@@ -84,17 +68,15 @@ passport.use(
         return done(err);
       }
 
-      // const oauthToken = oauth2.accessToken.create(params);
-
       try {
         await IntegrationService.checkIfIntegrationExists(
           newUser!.id as any,
-          "microsoft-calendar"
+          Services.microsoftCalendar
         );
       } catch (e) {
         try {
           await IntegrationService.createNewIntegration(
-            "microsoft-calendar",
+            Services.microsoftCalendar,
             newUser!.id as any,
             accessToken,
             refreshToken
@@ -104,7 +86,7 @@ passport.use(
         }
       }
 
-      return done(null, newUser);
+      return done(null, newUser!);
     }
   )
 );
@@ -124,8 +106,13 @@ router.post(
     session: false,
   }),
   function (req, res) {
-    console.log("req.user: ", req.user);
-    res.json(req.user);
+    if (req.user) {
+      const { email, id } = req.user as User;
+      const token = AuthService.issueToken(email, id);
+      res.redirect(`http://localhost:3000?token=${token}`);
+    }
+
+    res.redirect(`http://localhost:3000`);
   }
 );
 
