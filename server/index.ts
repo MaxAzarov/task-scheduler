@@ -1,64 +1,19 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import passport from "passport";
 import microsoftAuthRouter from "./microsoft";
 import googleAuthRouter from "./google";
 import dotenv from "dotenv";
 import session from "express-session";
 import db from "./db/sequelize";
-import auth from "./routes/public/auth";
+import authRouter from "./routes/public/auth";
+import eventsRouter from "./routes/private/events";
+import userRouter from "./routes/private/user";
+import ApiError from "./error/apiError";
 import cors from "cors";
-
-import { createProxyMiddleware } from "http-proxy-middleware";
 
 const app = express();
 
-app.all("/*", function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  next();
-});
-
-// app.use(
-//   cors()
-//   //   {
-//   //   // origin: "*",
-//   //   preflightContinue: true,
-//   //   origin: "*",
-//   //   methods: "GET, POST, PATCH, DELETE, PUT",
-//   // }
-// );
-
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-  );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next(); // dont forget this
-});
-
-app.options("*", cors() as any);
-
-// app.use(function (req, res, next) {
-//   // Website you wish to allow to connect
-//   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-
-//   // Request methods you wish to allow
-//   res.setHeader("Access-Control-Allow-Methods", "*");
-
-//   // Request headers you wish to allow
-//   res.setHeader(
-//     "Access-Control-Allow-Headers",
-//     ""
-//   );
-
-//   // Set to true if you need the website to include cookies in the requests sent
-//   // to the API (e.g. in case you use sessions)
-//   // res.setHeader("Access-Control-Allow-Credentials", true);
-
-//   // Pass to next layer of middleware
-//   next();
-// });
+app.use(cors());
 
 app.use(
   session({
@@ -77,17 +32,35 @@ app.use(passport.session());
 
 app.use("/microsoft", microsoftAuthRouter);
 app.use("/google", googleAuthRouter);
-app.use("/auth", auth);
+app.use("/auth", authRouter);
+app.use("/events", eventsRouter);
+app.use("/user", userRouter);
 
 passport.serializeUser(function (user, done) {
-  console.log("🚀 ~ file: index.ts ~ line 33 ~ user", user);
   done(null, user);
 });
 
 passport.deserializeUser(function (user: any, done) {
-  console.log("🚀 ~ file: index.ts ~ line 42 ~ user", user);
   done(null, user);
 });
+
+const errorHandler = (
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (err instanceof ApiError) {
+    return res
+      .status(err.status)
+      .json({ success: false, message: err.message });
+  }
+  return res
+    .status(500)
+    .json({ success: false, message: "Something went wrong" });
+};
+
+app.use(errorHandler);
 
 db.authenticate()
   .then(() => {

@@ -1,24 +1,28 @@
 import { axiosInstance } from "../axios";
 
-const Register = (
-  name: string,
-  surname: string,
+const Register = async (
+  firstName: string,
+  secondName: string,
   email: string,
   password: string
 ) => {
-  return axiosInstance.post("/auth/login", {
-    name,
-    surname,
+  const response = await axiosInstance.post("/auth/register", {
+    firstName,
+    secondName,
     email,
     password,
   });
+
+  return response.data;
 };
 
-const Login = (email: string, password: string) => {
-  return axiosInstance.post("/auth/register", {
+const Login = async (email: string, password: string) => {
+  const response = await axiosInstance.post("/auth/login", {
     email,
     password,
   });
+
+  return response.data;
 };
 
 export { Register, Login };

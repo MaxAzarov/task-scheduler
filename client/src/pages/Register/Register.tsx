@@ -1,29 +1,37 @@
-import { useEffect } from "react";
-import "antd/dist/antd.css";
+import { useCallback, useEffect, useState } from "react";
 import { Form, Input, Button } from "antd";
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { auth } from "./../../api/auth";
-import "./Login.scss";
-import useLocalStorage from "../../../customHooks/useLocalStorage";
+import { AuthAPI } from "../../components/api/auth";
+import "antd/dist/antd.css";
+import "./Register.scss";
+import useLocalStorage from "../../customHooks/useLocalStorage";
+import MicrosoftButton from "../../components/common/Buttons/MicrosoftButton/MicrosoftButton";
+import GoogleButton from "../../components/common/Buttons/GoogleButton/GoogleButton";
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
-  const [_, setValue] = useLocalStorage("token", "");
-  const onFinish = async (values: any) => {
-    try {
-      const token = await auth.Register(
-        values.firstName,
-        values.secondName,
-        values.email,
-        values.password
-      );
-      setValue(`Bearer ${token}`);
-      navigate("dashboard");
-    } catch (e) {
-      console.log("invalid credentials");
-    }
-  };
+  const [setValue] = useLocalStorage("token", "");
+  const [error, setError] = useState("");
+  const onFinish = useCallback(
+    async (values: any) => {
+      try {
+        await AuthAPI.Register(
+          values.firstName,
+          values.secondName,
+          values.email,
+          values.password
+        );
+
+        navigate("/", { replace: true });
+      } catch (e: any) {
+        console.log("🚀 ~ file: Register.tsx ~ line 30 ~ e", e);
+        console.log("Invalid credentials or User exists!");
+        setError(e.message);
+      }
+    },
+    [navigate]
+  );
 
   useEffect(() => {
     const urlSearchParams: URLSearchParams = new URLSearchParams(
@@ -41,7 +49,7 @@ const Login = () => {
   return (
     <div className="login-page">
       <Form className="login-page__form" initialValues={{}} onFinish={onFinish}>
-        <p>Login</p>
+        <p>Register</p>
         <Form.Item
           name="firstName"
           rules={[
@@ -100,6 +108,9 @@ const Login = () => {
             placeholder="Password"
           />
         </Form.Item>
+
+        {error && <Form.Item>{error}</Form.Item>}
+
         <Form.Item>
           <Button
             type="primary"
@@ -114,24 +125,8 @@ const Login = () => {
 
         <Form.Item>
           <div className="login-page__buttons">
-            <Button className="microsoft-btn">
-              <iframe
-                frameBorder="no"
-                title="Inline Frame Example"
-                src="https://s3-eu-west-1.amazonaws.com/cdn-testing.web.bas.ac.uk/scratch/bas-style-kit/ms-pictogram/ms-pictogram.svg"
-                className="microsoft-icon"
-              />
-              Continue with Microsoft
-            </Button>
-
-            <Button className="google-btn">
-              <img
-                className="google-icon"
-                src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-                alt="google"
-              />
-              Continue with Google
-            </Button>
+            <MicrosoftButton />
+            <GoogleButton />
           </div>
         </Form.Item>
       </Form>
@@ -139,4 +134,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

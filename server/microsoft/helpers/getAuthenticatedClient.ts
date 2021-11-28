@@ -7,10 +7,6 @@ function getAuthenticatedClient(accessToken: string) {
       done(null, accessToken);
     },
   });
-  console.log(
-    "🚀 ~ file: getAuthenticatedClient.ts ~ line 10 ~ getAuthenticatedClient ~ client",
-    client
-  );
 
   return client;
 }

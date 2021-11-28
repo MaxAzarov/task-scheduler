@@ -1,0 +1,29 @@
+$white: #fff;
+$google-blue: #4285f4;
+$button-active-blue: #1669f2;
+
+.google {
+  &-btn {
+    border: none;
+    width: 300px;
+    height: 42px;
+    background-color: #fff;
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.25);
+    font-family: "Roboto";
+  }
+
+  &-margin-right {
+    margin-right: 10px;
+  }
+
+  &:hover {
+    box-shadow: 0 0 6px $google-blue;
+  }
+  &:active {
+    background: $button-active-blue;
+  }
+}

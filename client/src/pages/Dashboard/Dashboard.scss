@@ -1,0 +1,28 @@
+@import "react-big-calendar/lib/sass/styles";
+
+.dashboard {
+  display: flex;
+
+  &__calendar {
+    max-width: 1000px;
+    height: 90vh;
+    flex: 1 1 50%;
+  }
+
+  &__sync {
+    flex: 1 1 15%;
+    display: flex;
+  }
+
+  &__options {
+    padding: 10px;
+    display: flex;
+    flex: 1 1 15%;
+    justify-content: flex-start;
+  }
+
+  &__navigation {
+    flex: 1 1 15%;
+    padding: 10px 0 0 10px;
+  }
+}

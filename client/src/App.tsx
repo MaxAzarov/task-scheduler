@@ -1,18 +1,29 @@
-import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Login from "./components/pages/Login/Login";
-import Register from "./components/pages/Register/Register";
+import { AuthContext } from "./components/contexts/AuthContext";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+import useAuth from "./customHooks/useAuth";
 
 function App() {
+  const { isAuthenticated, token } = useAuth();
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />}></Route>
-          <Route path="/dashboard" element={<div>dashboard</div>}></Route>
-          <Route path="/register" element={<Register />}></Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthContext.Provider
+        value={{
+          isAuthenticated,
+          logout: () => {},
+          token,
+        }}
+      >
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Login />}></Route>
+            <Route path="/dashboard" element={<Dashboard />}></Route>
+            <Route path="/register" element={<Register />}></Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthContext.Provider>
     </div>
   );
 }

@@ -9,14 +9,18 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
       },
-      name: {
+      subject: {
         type: Sequelize.STRING,
       },
+
       start_time: {
         type: Sequelize.DATE,
       },
       end_time: {
         type: Sequelize.DATE,
+      },
+      body: {
+        type: Sequelize.STRING,
       },
       user_id: {
         type: Sequelize.UUID,
@@ -24,14 +28,12 @@ module.exports = {
           model: "User",
         },
       },
-      body: {
-        type: Sequelize.STRING,
-      },
+
       status: {
         type: Sequelize.ENUM,
         values: ["accept", "decline", "pending"],
       },
-      integration: {
+      integration_id: {
         type: Sequelize.UUID,
         references: {
           model: "Integration",

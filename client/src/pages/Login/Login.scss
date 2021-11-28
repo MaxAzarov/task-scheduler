@@ -1,0 +1,23 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:500);
+
+.login-page {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+
+  &__form {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 0.5px solid black;
+    padding: 50px 20px;
+    border-radius: 20px;
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+}

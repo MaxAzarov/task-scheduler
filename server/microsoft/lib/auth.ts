@@ -19,8 +19,6 @@ const {
   OAUTH_ID_METADATA = "",
   OAUTH_AUTHORITY = "",
   OAUTH_SCOPES = "",
-  OAUTH_AUTHORIZE_ENDPOINT = "",
-  OAUTH_TOKEN_ENDPOINT = "",
 } = process.env;
 
 passport.use(
@@ -57,33 +55,32 @@ passport.use(
         const { userPrincipalName: email, givenName, surname } = user;
         try {
           newUser = await UserService.checkIfUserExistsByEmail(email);
-        } catch (e) {
-          try {
+          if (!newUser) {
             newUser = await UserService.addNewUser(givenName, surname, email);
-          } catch (e) {
-            console.log("e: ", e);
           }
+        } catch (e) {
+          throw new Error("Internal Error ");
         }
       } catch (err) {
         return done(err);
       }
 
       try {
-        await IntegrationService.checkIfIntegrationExists(
+        const integration = await IntegrationService.checkIfIntegrationExists(
           newUser!.id as any,
           Services.microsoftCalendar
         );
-      } catch (e) {
-        try {
+
+        if (!integration) {
           await IntegrationService.createNewIntegration(
             Services.microsoftCalendar,
             newUser!.id as any,
             accessToken,
             refreshToken
           );
-        } catch (e) {
-          console.log("e: ", e);
         }
+      } catch (e) {
+        console.log("e: ", e);
       }
 
       return done(null, newUser!);
@@ -110,6 +107,7 @@ router.post(
       const { email, id } = req.user as User;
       const token = AuthService.issueToken(email, id);
       res.redirect(`http://localhost:3000?token=${token}`);
+      return;
     }
 
     res.redirect(`http://localhost:3000`);

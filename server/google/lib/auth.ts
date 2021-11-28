@@ -1,5 +1,5 @@
 import passport from "passport";
-import { Router } from "express";
+import { Request, Router, Response, NextFunction } from "express";
 import { path } from "ramda";
 import { Profile, Strategy as GoogleStrategy } from "passport-google-oauth20";
 import UserService from "../../services/User";
@@ -38,33 +38,32 @@ passport.use(
         familyName: string;
         givenName: string;
       };
+
       let user: User | null;
       try {
         user = await UserService.checkIfUserExistsByEmail(email);
-      } catch (e) {
-        try {
+        if (!user) {
           user = await UserService.addNewUser(givenName, familyName, email);
-        } catch (e) {
-          console.log("e: ", e);
         }
+      } catch (e) {
+        return new Error("Internal error!");
       }
 
       try {
-        await IntegrationService.checkIfIntegrationExists(
+        const integration = await IntegrationService.checkIfIntegrationExists(
           user!.id as any,
           Services.googleCalendar
         );
-      } catch (e) {
-        try {
+        if (!integration) {
           await IntegrationService.createNewIntegration(
             Services.googleCalendar,
             user!.id as any,
             accessToken,
             refreshToken
           );
-        } catch (e) {
-          console.log("e: ", e);
         }
+      } catch (e) {
+        console.log("e: ", e);
       }
 
       return done(null, user! as any);
@@ -72,24 +71,29 @@ passport.use(
   )
 );
 
-router.get(
-  "/signin",
-  passport.authenticate("google", {
-    scope: [
-      "profile",
-      "email",
-      "https://www.googleapis.com/auth/calendar",
-      "https://www.googleapis.com/auth/calendar.readonly",
-      "https://www.googleapis.com/auth/calendar.events",
-      "https://www.googleapis.com/auth/calendar.events.readonly",
-      "https://www.googleapis.com/auth/calendar.settings.readonly",
-      "https://www.googleapis.com/auth/calendar.addons.execute",
-    ],
-    accessType: "offline",
-    prompt: "consent",
-    session: false,
-  })
-);
+router.get("/signin", (req: Request, res: Response, next: NextFunction) => {
+  passport.authenticate(
+    "google",
+    {
+      scope: [
+        "profile",
+        "email",
+        "https://www.googleapis.com/auth/calendar",
+        "https://www.googleapis.com/auth/calendar.readonly",
+        "https://www.googleapis.com/auth/calendar.events",
+        "https://www.googleapis.com/auth/calendar.events.readonly",
+        "https://www.googleapis.com/auth/calendar.settings.readonly",
+        "https://www.googleapis.com/auth/calendar.addons.execute",
+      ],
+      accessType: "offline",
+      prompt: "consent",
+      session: false,
+    },
+    function (err, user, info) {
+      if (err) console.log(err);
+    }
+  )(req, res, next);
+});
 
 router.get(
   "/callback",
@@ -102,6 +106,8 @@ router.get(
       const { email, id } = req.user as User;
       const token = AuthService.issueToken(email, id);
       res.redirect(`http://localhost:3000?token=${token}`);
+
+      return;
     }
 
     res.redirect(`http://localhost:3000`);

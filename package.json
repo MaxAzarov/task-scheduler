@@ -1,7 +1,7 @@
 {
   "name": "schedule-task",
   "version": "1.0.0",
-  "description": "",
+  "description": "Schedule Task program",
   "main": "index.js",
   "dependencies": {
     "concurrently": "^6.3.0",

@@ -1,3 +1,4 @@
-import * as auth from "./auth";
+import * as AuthAPI from "./auth";
+import * as EventsAPI from "./events";
 
-export { auth };
+export { AuthAPI, EventsAPI };

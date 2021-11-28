@@ -1,37 +1,43 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Form, Input, Button } from "antd";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { NavigateFunction, useNavigate } from "react-router-dom";
-import useLocalStorage from "../../../customHooks/useLocalStorage";
-import { auth } from "./../../api/auth";
+import { NavigateFunction, useNavigate, Link } from "react-router-dom";
+import useLocalStorage from "../../customHooks/useLocalStorage";
+import { AuthAPI } from "../../components/api/auth";
 import "antd/dist/antd.css";
 import "./Login.scss";
+import MicrosoftButton from "../../components/common/Buttons/MicrosoftButton/MicrosoftButton";
+import GoogleButton from "../../components/common/Buttons/GoogleButton/GoogleButton";
+import useAuth from "../../customHooks/useAuth";
 
-const Register = () => {
+const Login = () => {
   const navigate: NavigateFunction = useNavigate();
-  const [_, setValue] = useLocalStorage("token", "");
+  const { auth } = useAuth();
+  const [error, setError] = useState("");
+  const [, setValue] = useLocalStorage("token", "");
 
-  const onFinish = async (values: any) => {
-    try {
-      await auth.Register(
-        values.firstName,
-        values.secondName,
-        values.email,
-        values.password
-      );
-      navigate("login");
-    } catch (e) {
-      console.log("invalid credentials");
-    }
-  };
+  const onFinish = useCallback(
+    async (values: any) => {
+      try {
+        const response = await AuthAPI.Login(values.email, values.password);
+        const { token } = response;
+        auth(token);
+        navigate("/dashboard", { replace: true });
+      } catch (e) {
+        setError("Invalid credentials");
+      }
+    },
+    [auth, navigate]
+  );
 
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const params = Object.fromEntries(urlSearchParams.entries());
+    console.log("🚀 ~ file: Login.tsx ~ line 36 ~ useEffect ~ params", params);
 
     if (params.token) {
-      setValue(`Bearer ${params.token}`);
-      navigate("dashboard");
+      setValue(params.token);
+      navigate("/dashboard", { replace: true });
     }
   }, [navigate, setValue]);
 
@@ -69,6 +75,9 @@ const Register = () => {
             placeholder="Password"
           />
         </Form.Item>
+
+        {error && <Form.Item>{error}</Form.Item>}
+
         <Form.Item>
           <Button
             type="primary"
@@ -83,29 +92,19 @@ const Register = () => {
 
         <Form.Item>
           <div className="login-page__buttons">
-            <Button className="microsoft-btn">
-              <iframe
-                frameBorder="no"
-                title="Inline Frame Example"
-                src="https://s3-eu-west-1.amazonaws.com/cdn-testing.web.bas.ac.uk/scratch/bas-style-kit/ms-pictogram/ms-pictogram.svg"
-                className="microsoft-icon"
-              />
-              Continue with Microsoft
-            </Button>
-
-            <Button className="google-btn">
-              <img
-                className="google-icon"
-                src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-                alt="google"
-              />
-              Continue with Google
-            </Button>
+            <MicrosoftButton />
+            <GoogleButton />
           </div>
+        </Form.Item>
+
+        <Form.Item>
+          <Link to="/register">
+            <p>Register page</p>
+          </Link>
         </Form.Item>
       </Form>
     </div>
   );
 };
 
-export default Register;
+export default Login;

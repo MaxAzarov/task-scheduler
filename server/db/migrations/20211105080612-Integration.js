@@ -20,10 +20,10 @@ module.exports = {
         },
       },
       access_token: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(1500),
       },
       refresh_token: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(1500),
       },
       calendar_id: {
         type: Sequelize.STRING,

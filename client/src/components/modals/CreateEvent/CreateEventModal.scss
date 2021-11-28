@@ -1,0 +1,34 @@
+.create-event-modal {
+  &__name {
+    margin-bottom: 10px !important;
+  }
+
+  &__description {
+    margin-bottom: 10px !important;
+  }
+
+  &__rangepicker {
+    margin-bottom: 10px !important;
+  }
+
+  &__integrations {
+    width: 100%;
+    display: flex;
+  }
+
+  &__item {
+    width: 30px;
+    height: 30px;
+    background-color: #ffef11;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-right: 10px;
+  }
+
+  &--active-item {
+    background-color: #1135ff;
+  }
+}

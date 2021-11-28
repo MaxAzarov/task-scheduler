@@ -9,10 +9,10 @@
     "it": "mocha -r ts-node/register 'tests/it/*.ts'"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Max Azarov",
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
+    "@types/bluebird": "^3.5.36",
     "@types/chai": "^4.2.22",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
@@ -34,6 +34,7 @@
     "@microsoft/microsoft-graph-client": "^3.0.0",
     "axios": "^0.24.0",
     "bcryptjs": "^2.4.3",
+    "bluebird": "^3.7.2",
     "concurrently": "^6.3.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
@@ -41,6 +42,7 @@
     "express-session": "^1.17.2",
     "isomorphic-fetch": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
+    "moment-range": "^4.0.2",
     "nodemon": "^2.0.14",
     "passport": "^0.5.0",
     "passport-azure-ad": "^4.3.1",

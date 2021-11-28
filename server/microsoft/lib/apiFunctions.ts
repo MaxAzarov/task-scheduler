@@ -1,10 +1,43 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+import { IMicrosoftEvent } from "../types";
+import Moment from "moment";
+import { compose } from "ramda";
+import splitRangeByDays from "../../utils/splitRangeByDays";
+import normalizeMicrosoftEvents from "./normalizeEvents";
+import paginateOverRanges from "./../../utils/paginateOverRange";
+import { DATE_FORMAT_API } from "../../constants/services";
 
-export const getCalendarsList = async (accessToken: string) => {
+export async function* getMicrosoftEvents(
+  accessToken: string,
+  startTime: string,
+  endTime: string
+) {
+  const ranges = splitRangeByDays(3, Moment(startTime), Moment(endTime));
+  console.log("🚀 ~ file: apiFunctions.ts ~ line 15 ~ ranges", ranges);
+
+  yield* compose<typeof getMicrosoftCalendarEvents, any>(
+    paginateOverRanges(ranges, accessToken, normalizeMicrosoftEvents)
+  )(getMicrosoftCalendarEvents);
+}
+
+export const getMicrosoftCalendarEvents = async (
+  accessToken: string,
+  startTime: string,
+  endTime: string
+): Promise<AxiosResponse<IMicrosoftEvent, any>> => {
   // &$top=25&startDateTime=2021-05-29T21:00:00Z&endDateTime=2021-06-05T21:00:00Z
+  // `https://graph.microsoft.com/v1.0/me/calendarview?$select=subject,organizer,start,end&$orderby=start/dateTime&startDateTime=2021-11-23T21:00:00Z&endDateTime=2021-11-29T21:00:00Z`,
   return axios.get(
     `https://graph.microsoft.com/v1.0/me/calendarview?$select=subject,organizer,start,end&$orderby=start/dateTime`,
     {
+      params: {
+        // startDateTime: "2021-11-23T21:00:00Z",
+        // endDateTime: "2021-11-29T21:00:00Z",
+        startDateTime: Moment(startTime).format("YYYY-MM-DD[T]12:mm:ss[Z]"),
+        endDateTime: Moment(endTime)
+          .add(1, "d")
+          .format("YYYY-MM-DD[T]12:mm:ss[Z]"),
+      },
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -23,7 +56,33 @@ export const getMe = async (accessToken: string) => {
   );
 };
 
-export const createMicrosoftEvent = async (accessToken: string, event: any) => {
+export interface Options {
+  subject: string;
+  description: string;
+  startTime: string;
+  endTime: string;
+}
+
+export const createMicrosoftEvent = async (
+  accessToken: string,
+  event: Options
+) => {
+  const { subject, description, startTime, endTime } = event;
+  const data = {
+    subject,
+    body: {
+      contentType: "HTML",
+      content: description,
+    },
+    start: {
+      dateTime: Moment(startTime, DATE_FORMAT_API).format("YYYY-MM-DD[T]HH:mm"),
+      timeZone: "FLE Standard Time",
+    },
+    end: {
+      dateTime: Moment(endTime, DATE_FORMAT_API).format("YYYY-MM-DD[T]HH:mm"),
+      timeZone: "FLE Standard Time",
+    },
+  };
   return axios({
     method: "POST",
     url: `https://graph.microsoft.com/v1.0/me/events`,
@@ -31,35 +90,9 @@ export const createMicrosoftEvent = async (accessToken: string, event: any) => {
       Authorization: `Bearer ${accessToken}`,
       "Content-type": "application/json",
     },
-    data: event,
+    data,
   });
 };
-
-// example body:
-// {
-//   "subject": "Let\'s go for lunch",
-//   "body": {
-//     "contentType": "HTML",
-//     "content": "Does mid month work for you?"
-//   },
-//   "start": {
-//       "dateTime": "2021-06-01T16:13",
-//       "timeZone": "FLE Standard Time"
-//   },
-//   "end": {
-//       "dateTime": "2021-06-01T16:13",
-//       "timeZone": "FLE Standard Time"
-//   },
-//   "attendees": [
-//     {
-//       "emailAddress": {
-//         "address": "emailsendler@gmail.com",
-//         "name": "Adele Vance"
-//       },
-//       "type": "required"
-//     }
-//   ]
-// }
 
 export const updateMicrosoftEvent = async (
   accessToken: string,
@@ -77,16 +110,38 @@ export const updateMicrosoftEvent = async (
   });
 };
 
-export const cancelMicrosoftEvent = async (
-  accessToken: string,
-  eventID: string
-) => {
+export const cancelMicrosoftEvent = async ({
+  accessToken,
+  eventId,
+  calendarId,
+}: {
+  accessToken: string;
+  eventId: string;
+  calendarId?: string;
+}) => {
   return axios({
     method: "POST",
-    url: `https://graph.microsoft.com/v1.0/me/events/${eventID}/cancel`,
+    url: `https://graph.microsoft.com/v1.0/me/events/${eventId}/cancel`,
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-type": "application/json",
+    },
+  });
+};
+
+export const deleteMicrosoftEvent = async ({
+  accessToken,
+  eventId,
+}: {
+  accessToken: string;
+  eventId: string;
+  calendarId?: string;
+}) => {
+  return axios({
+    method: "DELETE",
+    url: `https://graph.microsoft.com/v1.0/me/events/${eventId}`,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 };
@@ -121,17 +176,31 @@ export const rejectEvent = async (
   });
 };
 
-export const getNewMicrosoftAccessToken = async (refresh_token: string) => {
+export const getNewMicrosoftAccessToken = async (
+  refresh_token: string
+): Promise<AxiosResponse<any, any>> => {
   const params = new URLSearchParams();
-  params.append("redirect_uri", "http://localhost:3000/");
+  console.log(
+    "🚀 ~ file: apiFunctions.ts ~ line 168 ~ refresh_token",
+    refresh_token
+  );
+
+  console.log("OAUTH_REDIRECT_URIP: ", process.env.OAUTH_REDIRECT_URI);
+  console.log(
+    "process.env.OAUTH_APP_ID as string",
+    process.env.OAUTH_APP_ID as string
+  );
+  params.append("redirect_uri", process.env.OAUTH_REDIRECT_URI as string);
   params.append("refresh_token", refresh_token);
   params.append("grant_type", "refresh_token");
-  params.append("client_id", "64202838-d1b1-4cb4-b88e-0a49999f224d");
+  params.append("scope", process.env.OAUTH_SCOPES as string);
+  params.append("client_secret", process.env.OAUTH_APP_PASSWORD as string);
+  params.append("client_id", process.env.OAUTH_APP_ID as string);
 
   const config = {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      Origin: "http://localhost:3000/",
+      // Origin: "http://localhost:5000/",
     },
   };
   const response = axios.post(
@@ -143,4 +212,6 @@ export const getNewMicrosoftAccessToken = async (refresh_token: string) => {
   return response;
 };
 
-export const verifyAccessToken = () => {};
+export const verifyAccessToken = (): Promise<boolean> => {
+  return Promise.resolve(false);
+};

@@ -33,6 +33,8 @@ class IntegrationService {
       timezone,
     } as any);
 
+    await newIntegration.save();
+
     return newIntegration;
   }
 }
