@@ -4,10 +4,4 @@ export interface Event {
   start: { dateTime: string; timeZone: string };
   end: { dateTime: string; timeZone: string };
   link?: string;
-  //   organizer: {
-  //     emailAddress: {
-  //       name: string;
-  //       address: string;
-  //     };
-  //   };
 }

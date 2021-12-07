@@ -10,6 +10,7 @@ import eventsRouter from "./routes/private/events";
 import userRouter from "./routes/private/user";
 import ApiError from "./error/apiError";
 import cors from "cors";
+import checkJWT from "./middlewares/checkJWT";
 
 const app = express();
 
@@ -33,8 +34,8 @@ app.use(passport.session());
 app.use("/microsoft", microsoftAuthRouter);
 app.use("/google", googleAuthRouter);
 app.use("/auth", authRouter);
-app.use("/events", eventsRouter);
-app.use("/user", userRouter);
+app.use("/events", checkJWT, eventsRouter);
+app.use("/user", checkJWT, userRouter);
 
 passport.serializeUser(function (user, done) {
   done(null, user);

@@ -1,4 +1,6 @@
 import { User } from "../db/sequelize";
+import bcrypt from "bcryptjs";
+import AuthService from "./Auth";
 
 class UserService {
   constructor() {}
@@ -64,6 +66,63 @@ class UserService {
   }
 
   deleteUser() {}
+
+  Login = async (
+    email: string,
+    password?: string
+  ): Promise<string | Error | undefined> => {
+    try {
+      const candidate = await this.findUserByEmail(email);
+
+      if (candidate) {
+        if (password) {
+          const isValid: boolean = await bcrypt.compare(
+            candidate.password,
+            password
+          );
+
+          if (isValid) {
+            const token = AuthService.issueToken(email, candidate.id);
+            return token;
+          }
+        } else {
+          throw new Error("User does not exist!");
+        }
+        const token = AuthService.issueToken(email, candidate.id);
+        return token;
+      } else {
+        throw new Error("User does not exist!");
+      }
+    } catch (e) {
+      throw new Error("Invalid credentials");
+    }
+  };
+
+  Register = async (
+    email: string,
+    name: string,
+    secondName: string,
+    password?: string
+  ) => {
+    const candidate = await this.findUserByEmail(email);
+
+    if (candidate) {
+      throw new Error("User already exists");
+    }
+
+    let encryptedPassword;
+    if (password) {
+      encryptedPassword = await bcrypt.hash(password, 10);
+    }
+
+    try {
+      await this.addNewUser(name, secondName, email, encryptedPassword);
+
+      return { status: "ok" };
+    } catch (e) {
+      throw new Error("Error occured!");
+    }
+  };
 }
 
 export default new UserService();

@@ -40,7 +40,9 @@ const DeleteEventModal = ({
       await EventsAPI.DeleteEvent(id);
       setIsVisible(false);
       getAllEvents();
-    } catch (e) {}
+    } catch (e) {
+      alert(e);
+    }
   }, [id, setIsVisible, getAllEvents]);
 
   return (

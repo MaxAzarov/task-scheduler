@@ -1,10 +1,9 @@
 import { Router } from "express";
-import checkJWT from "../../../middlewares/checkJWT";
 
 import { getUsersAvailableIntegrations } from "./controller";
 
 const router = Router();
 
-router.get("/integrations", checkJWT, getUsersAvailableIntegrations);
+router.get("/integrations", getUsersAvailableIntegrations);
 
 export default router;

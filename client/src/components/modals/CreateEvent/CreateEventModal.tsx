@@ -3,16 +3,15 @@ import { useCallback, useState } from "react";
 import { stringOrDate } from "react-big-calendar";
 import moment, { Moment } from "moment";
 import classnames from "classnames";
-
-import "./CreateEventModal.scss";
+import { map } from "ramda";
 import { EventsAPI } from "../../api/events";
 import GoogleIcon from "../../common/Icons/GoogleIcon/GoogleIcon";
 import MicrosoftIcon from "../../common/Icons/MicrosoftIcon/MicrosoftIcon";
-import { map } from "ramda";
 import { DATE_FORMAT_API } from "../../constants";
 import { Services } from "../../types";
+import "./CreateEventModal.scss";
 
-function getKeyByValue(value: string) {
+function getKeyByValue(value: string): string | undefined {
   return Object.keys(Services).find(
     (key) => Services[key as "googleCalendar" | "microsoftCalendar"] === value
   );
@@ -75,16 +74,19 @@ const CreateEvent = ({
   );
 
   const handleOk = useCallback(async () => {
-    console.log("setSelectedIntegrations: ", selectedIntegrations);
-    await EventsAPI.CreateEvent({
-      subject: eventName,
-      description,
-      startTime: range.start.format(DATE_FORMAT_API),
-      endTime: range.end.format(DATE_FORMAT_API),
-      types: map(getKeyByValue, selectedIntegrations) as any,
-    });
-    setIsVisible(false);
-    await getAllEvents();
+    try {
+      await EventsAPI.CreateEvent({
+        subject: eventName,
+        description,
+        startTime: range.start.format(DATE_FORMAT_API),
+        endTime: range.end.format(DATE_FORMAT_API),
+        types: map(getKeyByValue, selectedIntegrations) as any,
+      });
+      setIsVisible(false);
+      await getAllEvents();
+    } catch (e) {
+      alert(e);
+    }
   }, [
     setIsVisible,
     range.end,
@@ -142,22 +144,26 @@ const CreateEvent = ({
       </div>
 
       <div className="create-event-modal__integrations">
-        {availableIntegrations.map((item) => {
-          const Icon = getIconFromType(item.type);
-          return (
-            <div
-              key={item.type}
-              className={classnames({
-                "create-event-modal__item": true,
-                "create-event-modal--active-item":
-                  selectedIntegrations.includes(item.type),
-              })}
-              onClick={() => addOrRemoveIntegration(item.type)}
-            >
-              <Icon />
-            </div>
-          );
-        })}
+        {availableIntegrations.length > 0 ? (
+          availableIntegrations.map((item) => {
+            const Icon = getIconFromType(item.type);
+            return (
+              <div
+                key={item.type}
+                className={classnames({
+                  "create-event-modal__item": true,
+                  "create-event-modal--active-item":
+                    selectedIntegrations.includes(item.type),
+                })}
+                onClick={() => addOrRemoveIntegration(item.type)}
+              >
+                <Icon />
+              </div>
+            );
+          })
+        ) : (
+          <div>No available integrations</div>
+        )}
       </div>
     </Modal>
   );

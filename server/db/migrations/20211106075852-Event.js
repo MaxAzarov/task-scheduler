@@ -12,7 +12,6 @@ module.exports = {
       subject: {
         type: Sequelize.STRING,
       },
-
       start_time: {
         type: Sequelize.DATE,
       },
@@ -28,7 +27,6 @@ module.exports = {
           model: "User",
         },
       },
-
       status: {
         type: Sequelize.ENUM,
         values: ["accept", "decline", "pending"],
@@ -36,8 +34,12 @@ module.exports = {
       integration_id: {
         type: Sequelize.UUID,
         references: {
-          model: "Integration",
+          model: {
+            tableName: "Integration",
+          },
+          key: "id",
         },
+        allowNull: true,
       },
       event_id: {
         type: Sequelize.STRING,

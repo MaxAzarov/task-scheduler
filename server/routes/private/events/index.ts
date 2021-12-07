@@ -1,5 +1,4 @@
 import { Router } from "express";
-import checkJWT from "../../../middlewares/checkJWT";
 import {
   SynchronizeCalendar,
   getAllEvents,
@@ -9,12 +8,9 @@ import {
 
 const router = Router();
 
-router.post("/create", checkJWT, CreateEvents);
-
-router.get("/synchronize", checkJWT, SynchronizeCalendar);
-
-router.get("/", checkJWT, getAllEvents);
-
-router.delete("/:eventId", checkJWT, DeleteEvent);
+router.post("/create", CreateEvents);
+router.get("/synchronize", SynchronizeCalendar);
+router.get("/", getAllEvents);
+router.delete("/:eventId", DeleteEvent);
 
 export default router;

@@ -1,67 +1,35 @@
-import { User } from "../../../db/sequelize";
-import UserService from "./../../../services/User";
-import AuthService from "./../../../services/Auth";
-import bcrypt from "bcryptjs";
+import { NextFunction, Request, Response } from "express";
 import ApiError from "../../../error/apiError";
 
-const Login = async (
-  email: string,
-  password?: string
-): Promise<string | Error | undefined> => {
+import UserService from "./../../../services/User";
+
+const userLogin = async (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body;
   try {
-    const candidate = await UserService.findUserByEmail(email);
-
-    if (candidate) {
-      if (password) {
-        const isValid: boolean = await bcrypt.compare(
-          candidate.password,
-          password
-        );
-
-        if (isValid) {
-          return "ok";
-        }
-      } else {
-        throw new Error("User does not exist!");
-      }
-      return "ok";
-    } else {
-      throw new Error("User does not exist!");
-    }
+    const token = await UserService.Login(email, password);
+    res.json({ token });
   } catch (e) {
-    throw new Error("Invalid credentials");
+    return next(ApiError.badRequest("User does not exist!"));
   }
 };
 
-const Register = async (
-  email: string,
-  name: string,
-  secondName: string,
-  password?: string
+const userRegister = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
-  const candidate = await UserService.findUserByEmail(email);
-
-  if (candidate) {
-    throw new Error("User already exists");
-  }
-
-  let encryptedPassword;
-  if (password) {
-    encryptedPassword = await bcrypt.hash(password, 10);
-  }
-
+  const { email, firstName, secondName, password } = req.body;
   try {
-    const user: User = await UserService.addNewUser(
-      name,
-      secondName,
+    const status = await UserService.Register(
       email,
-      encryptedPassword
+      firstName,
+      secondName,
+      password
     );
-
-    return { status: "ok" };
+    return res.send(201).json({ status });
   } catch (e) {
-    throw new Error("Error occured!");
+    return next(ApiError.badRequest("User exists"));
   }
 };
 
-export { Login, Register };
+export { userLogin, userRegister };

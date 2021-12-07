@@ -87,7 +87,7 @@ const Dashboard = (): JSX.Element => {
       const events: DbEvent[] = await EventsAPI.GetAllEvents();
       setEvents(normalizeDbEvents(events));
     } catch (e) {
-      alert("Error occured");
+      alert("Can't take events");
     }
   };
 

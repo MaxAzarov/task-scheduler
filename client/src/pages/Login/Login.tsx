@@ -4,11 +4,11 @@ import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { NavigateFunction, useNavigate, Link } from "react-router-dom";
 import useLocalStorage from "../../customHooks/useLocalStorage";
 import { AuthAPI } from "../../components/api/auth";
-import "antd/dist/antd.css";
-import "./Login.scss";
 import MicrosoftButton from "../../components/common/Buttons/MicrosoftButton/MicrosoftButton";
 import GoogleButton from "../../components/common/Buttons/GoogleButton/GoogleButton";
 import useAuth from "../../customHooks/useAuth";
+import "antd/dist/antd.css";
+import "./Login.scss";
 
 const Login = () => {
   const navigate: NavigateFunction = useNavigate();
@@ -22,18 +22,20 @@ const Login = () => {
         const response = await AuthAPI.Login(values.email, values.password);
         const { token } = response;
         auth(token);
+        setValue(token);
         navigate("/dashboard", { replace: true });
       } catch (e) {
         setError("Invalid credentials");
       }
     },
-    [auth, navigate]
+    [auth, navigate, setValue]
   );
 
   useEffect(() => {
-    const urlSearchParams = new URLSearchParams(window.location.search);
+    const urlSearchParams: URLSearchParams = new URLSearchParams(
+      window.location.search
+    );
     const params = Object.fromEntries(urlSearchParams.entries());
-    console.log("🚀 ~ file: Login.tsx ~ line 36 ~ useEffect ~ params", params);
 
     if (params.token) {
       setValue(params.token);

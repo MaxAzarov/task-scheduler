@@ -39,10 +39,16 @@ class Event extends Model<Event> {
   @BelongsTo(() => User)
   user!: User;
 
+  @AllowNull(true)
   @ForeignKey(() => Integration)
+  @Column(DataType.UUID)
   integration_id!: number;
 
-  @BelongsTo(() => Integration)
+  @BelongsTo(() => Integration, {
+    foreignKey: {
+      allowNull: true,
+    },
+  })
   integration!: Integration;
 
   @Column(DataType.STRING)
