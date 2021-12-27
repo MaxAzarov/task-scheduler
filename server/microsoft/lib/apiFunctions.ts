@@ -13,9 +13,8 @@ export async function* getMicrosoftEvents(
   endTime: string
 ) {
   const ranges = splitRangeByDays(3, Moment(startTime), Moment(endTime));
-  console.log("🚀 ~ file: apiFunctions.ts ~ line 15 ~ ranges", ranges);
 
-  yield* compose<typeof getMicrosoftCalendarEvents, any>(
+  yield* compose<any, any>(
     paginateOverRanges(ranges, accessToken, normalizeMicrosoftEvents)
   )(getMicrosoftCalendarEvents);
 }

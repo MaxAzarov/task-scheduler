@@ -22,10 +22,10 @@ export async function* getGoogleEvents(
   accessToken: string,
   startTime: string,
   endTime: string
-) {
+): AsyncGenerator<any, void, unknown> {
   const ranges = splitRangeByDays(3, Moment(startTime), Moment(endTime));
 
-  yield* compose<typeof getGoogleCalendarEvents, any>(
+  yield* compose<any, any>(
     paginateOverRanges(ranges, accessToken, normalizeGoogleEvents)
   )(getGoogleCalendarEvents);
 }

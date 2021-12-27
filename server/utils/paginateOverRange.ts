@@ -1,5 +1,4 @@
 import { curry, path } from "ramda";
-
 const getData = path(["data"]);
 
 async function* paginateOverRanges(
@@ -10,7 +9,7 @@ async function* paginateOverRanges(
   accessToken: string,
   normalizeFunction: Function,
   fetchMethod: Function
-) {
+): AsyncGenerator<any, void, unknown> {
   for (let i = 0; i < ranges.length; i++) {
     const response = await fetchMethod(
       accessToken,
