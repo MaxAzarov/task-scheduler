@@ -1,8 +1,9 @@
-import { User } from "../db/sequelize";
 import bcrypt from "bcryptjs";
 import AuthService from "./Auth";
+import { User } from "../db/sequelize";
 
 class UserService {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor() {}
 
   /**
@@ -12,8 +13,8 @@ class UserService {
   async checkIfUserExistsByEmail(email: string): Promise<User | null> {
     const user = await User.findOne({
       where: {
-        email,
-      },
+        email
+      }
     });
 
     return user;
@@ -26,8 +27,8 @@ class UserService {
   async checkIfUserExistsById(id: string): Promise<User> {
     const user = await User.findOne({
       where: {
-        id,
-      },
+        id
+      }
     });
 
     if (user) {
@@ -40,8 +41,8 @@ class UserService {
   async findUserByEmail(email: string): Promise<User | null> {
     const user: User | null = await User.findOne({
       where: {
-        email,
-      },
+        email
+      }
     });
 
     return user;
@@ -57,7 +58,7 @@ class UserService {
       name,
       secondName,
       email,
-      password,
+      password
     } as any);
 
     await newUser.save();
@@ -65,6 +66,7 @@ class UserService {
     return newUser;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   deleteUser() {}
 
   Login = async (

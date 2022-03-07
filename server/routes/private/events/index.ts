@@ -3,7 +3,7 @@ import {
   SynchronizeCalendar,
   getAllEvents,
   CreateEvents,
-  DeleteEvent,
+  DeleteEvent
 } from "./controller";
 
 const router = Router();

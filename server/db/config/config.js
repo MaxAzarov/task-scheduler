@@ -9,7 +9,7 @@ const db = {
     host: DB_HOST || "localhost",
     port: DB_PORT || 5432,
     dialect: "postgres",
-    dialectModule: null,
+    dialectModule: null
   },
   test: {
     username: DB_USER,
@@ -17,7 +17,7 @@ const db = {
     database: DB_NAME,
     host: DB_HOST || "localhost",
     port: DB_PORT || 5432,
-    dialect: "postgres",
+    dialect: "postgres"
   },
   production: {
     username: DB_USER,
@@ -25,8 +25,8 @@ const db = {
     database: DB_NAME,
     host: DB_HOST || "localhost",
     port: DB_PORT || 5432,
-    dialect: "postgres",
-  },
+    dialect: "postgres"
+  }
 };
 
 module.exports = db;

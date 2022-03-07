@@ -1,7 +1,7 @@
 import { Readable } from "stream";
+import util from "util";
 import { getGoogleEvents } from "../../google/lib/apiFunctions";
 import getArrayFromStream from "../../utils/getArrayFromStream";
-const util = require("util");
 
 describe.skip("google getGoogleCalendarsList", () => {
   it("should work properly", async () => {

@@ -1,12 +1,12 @@
 import passport from "passport";
 import { OIDCStrategy } from "passport-azure-ad";
 import dotenv from "dotenv";
-import UserService from "../../services/User";
 import { Router } from "express";
-import getUserDetails from "../helpers/getUserDetails";
 import IntegrationService from "./../../services/Integration";
-import { User } from "../../db/sequelize";
 import AuthService from "./../../services/Auth";
+import UserService from "../../services/User";
+import getUserDetails from "../helpers/getUserDetails";
+import { User } from "../../db/sequelize";
 import { Services } from "../../constants/services";
 const router = Router();
 
@@ -18,7 +18,7 @@ const {
   OAUTH_APP_PASSWORD = "",
   OAUTH_ID_METADATA = "",
   OAUTH_AUTHORITY = "",
-  OAUTH_SCOPES = "",
+  OAUTH_SCOPES = ""
 } = process.env;
 
 passport.use(
@@ -33,7 +33,7 @@ passport.use(
       clientSecret: OAUTH_APP_PASSWORD,
       validateIssuer: false,
       passReqToCallback: false,
-      scope: OAUTH_SCOPES.split(" "),
+      scope: OAUTH_SCOPES.split(" ")
     },
     async function signInComplete(
       iss: any,
@@ -93,14 +93,14 @@ router.get(
   passport.authenticate("azuread-openidconnect", {
     prompt: "login",
     failureFlash: true,
-    session: false,
+    session: false
   })
 );
 
 router.post(
   "/callback",
   passport.authenticate("azuread-openidconnect", {
-    session: false,
+    session: false
   }),
   function (req, res) {
     if (req.user) {
@@ -110,7 +110,7 @@ router.post(
       return;
     }
 
-    res.redirect(`http://localhost:3000`);
+    res.redirect("http://localhost:3000");
   }
 );
 

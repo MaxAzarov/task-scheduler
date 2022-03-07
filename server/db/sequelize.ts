@@ -8,7 +8,7 @@ const sequelize = new Sequelize({
   database: "schedule-task",
   username: "postgres",
   password: "starwars",
-  models: [__dirname + "/models/*.ts"],
+  models: [__dirname + "/models/*.ts"]
 });
 
 export default sequelize;

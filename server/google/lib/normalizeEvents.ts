@@ -12,7 +12,7 @@ const normalizeGoogleEvents = (data: IGoogleEvent): Event[] => {
       subject: summary,
       start,
       end,
-      link: htmlLink,
+      link: htmlLink
     };
   }, items);
 };

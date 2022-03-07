@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import ApiError from "../../../error/apiError";
-
 import UserService from "./../../../services/User";
+import ApiError from "../../../error/apiError";
 
 const userLogin = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;

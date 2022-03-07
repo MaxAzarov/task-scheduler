@@ -7,14 +7,14 @@ import {
   Default,
   ForeignKey,
   BelongsTo,
-  PrimaryKey,
+  PrimaryKey
 } from "sequelize-typescript";
-import { Services } from "../../constants/services";
 import User from "./User";
+import { Services } from "../../constants/services";
 
 @Table({
   timestamps: true,
-  tableName: `Integration`,
+  tableName: "Integration"
 })
 class Integration extends Model<Integration> {
   @PrimaryKey

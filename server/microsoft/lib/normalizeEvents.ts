@@ -12,7 +12,7 @@ const normalizeMicrosoftEvents = (data: IMicrosoftEvent): Event[] => {
       id,
       subject,
       start,
-      end,
+      end
     };
   }, items);
 };

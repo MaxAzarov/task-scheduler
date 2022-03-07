@@ -7,14 +7,14 @@ import {
   Default,
   Length,
   HasMany,
-  PrimaryKey,
+  PrimaryKey
 } from "sequelize-typescript";
 import Integration from "./Integration";
 import Event from "./Event";
 
 @Table({
   timestamps: true,
-  tableName: `User`,
+  tableName: "User"
 })
 class User extends Model<User> {
   @PrimaryKey

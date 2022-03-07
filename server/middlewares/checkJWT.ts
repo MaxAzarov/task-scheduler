@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import ApiError from "../error/apiError";
 import dotenv from "dotenv";
+import ApiError from "../error/apiError";
 
 export default async function checkJWT(
   req: Request,

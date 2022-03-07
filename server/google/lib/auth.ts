@@ -2,11 +2,11 @@ import passport from "passport";
 import { Request, Router, Response, NextFunction } from "express";
 import { path } from "ramda";
 import { Profile, Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { VerifyCallback } from "passport-azure-ad";
+import AuthService from "./../../services/Auth";
 import UserService from "../../services/User";
 import IntegrationService from "../../services/Integration";
 import { User } from "../../db/sequelize";
-import { VerifyCallback } from "passport-azure-ad";
-import AuthService from "./../../services/Auth";
 import { Services } from "../../constants/services";
 
 const router = Router();
@@ -14,7 +14,7 @@ const router = Router();
 const {
   GOODLE_CLIENT_ID = "",
   GOOGLE_CLIENT_SECRET = "",
-  GOOGLE_CALLBACK_URL = "",
+  GOOGLE_CALLBACK_URL = ""
 } = process.env;
 
 passport.use(
@@ -22,7 +22,7 @@ passport.use(
     {
       clientID: GOODLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: GOOGLE_CALLBACK_URL,
+      callbackURL: GOOGLE_CALLBACK_URL
     },
     async function (
       accessToken: string,
@@ -83,11 +83,11 @@ router.get("/signin", (req: Request, res: Response, next: NextFunction) => {
         "https://www.googleapis.com/auth/calendar.events",
         "https://www.googleapis.com/auth/calendar.events.readonly",
         "https://www.googleapis.com/auth/calendar.settings.readonly",
-        "https://www.googleapis.com/auth/calendar.addons.execute",
+        "https://www.googleapis.com/auth/calendar.addons.execute"
       ],
       accessType: "offline",
       prompt: "consent",
-      session: false,
+      session: false
     },
     function (err, user, info) {
       if (err) console.log(err);
@@ -99,7 +99,7 @@ router.get(
   "/callback",
   passport.authenticate("google", {
     failureRedirect: "/failed",
-    session: false,
+    session: false
   }),
   function (req, res) {
     if (req.user) {
@@ -110,7 +110,7 @@ router.get(
       return;
     }
 
-    res.redirect(`http://localhost:3000`);
+    res.redirect("http://localhost:3000");
   }
 );
 

@@ -1,15 +1,15 @@
 import express, { NextFunction, Request, Response } from "express";
 import passport from "passport";
-import microsoftAuthRouter from "./microsoft";
-import googleAuthRouter from "./google";
+import cors from "cors";
 import dotenv from "dotenv";
 import session from "express-session";
+import microsoftAuthRouter from "./microsoft";
+import googleAuthRouter from "./google";
 import db from "./db/sequelize";
 import authRouter from "./routes/public/auth";
 import eventsRouter from "./routes/private/events";
 import userRouter from "./routes/private/user";
 import ApiError from "./error/apiError";
-import cors from "cors";
 import checkJWT from "./middlewares/checkJWT";
 
 const app = express();
@@ -21,7 +21,7 @@ app.use(
     secret: "your_secret_value_here",
     resave: false,
     saveUninitialized: false,
-    unset: "destroy",
+    unset: "destroy"
   })
 );
 
@@ -66,7 +66,7 @@ app.use(errorHandler);
 db.authenticate()
   .then(() => {
     app.listen(5000, () => {
-      console.log(`🚀 Server ready at http://localhost:5000`);
+      console.log("🚀 Server ready at http://localhost:5000");
     });
   })
   .catch((e) => {

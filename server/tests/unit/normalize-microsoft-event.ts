@@ -13,15 +13,15 @@ describe("normalizeMicrosoftEvent", () => {
         organizer: {
           emailAddress: {
             name: "name",
-            address: "address",
-          },
-        },
+            address: "address"
+          }
+        }
       })
     ).deep.equals({
       id: "id",
       subject: "tille",
       start: { dateTime: "start", timeZone: "" },
-      end: { dateTime: "end", timeZone: "" },
+      end: { dateTime: "end", timeZone: "" }
     });
   });
 });

@@ -1,6 +1,6 @@
 export enum Services {
   googleCalendar = "google-calendar",
-  microsoftCalendar = "microsoft-calendar",
+  microsoftCalendar = "microsoft-calendar"
 }
 
 export const DATE_FORMAT = "YYYY-MM-DD";

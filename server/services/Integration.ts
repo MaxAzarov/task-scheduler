@@ -2,6 +2,7 @@ import { Services } from "../constants/services";
 import { Integration } from "../db/sequelize";
 
 class IntegrationService {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor() {}
 
   async checkIfIntegrationExists(
@@ -11,8 +12,8 @@ class IntegrationService {
     const integration = await Integration.findOne({
       where: {
         user_id: userId,
-        type: integrationType,
-      },
+        type: integrationType
+      }
     });
 
     return integration;
@@ -30,7 +31,7 @@ class IntegrationService {
       user_id,
       access_token,
       refresh_token,
-      timezone,
+      timezone
     } as any);
 
     await newIntegration.save();

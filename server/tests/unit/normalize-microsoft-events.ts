@@ -14,18 +14,18 @@ describe("normalizeMicrosoftEvents", () => {
             subject: "test",
             start: {
               dateTime: "2021-11-24T19:00:00.0000000",
-              timeZone: "UTC",
+              timeZone: "UTC"
             },
             end: {
               dateTime: "2021-11-24T19:30:00.0000000",
-              timeZone: "UTC",
+              timeZone: "UTC"
             },
             organizer: {
               emailAddress: {
                 name: "Максим Азаров",
-                address: "outlook_71587A5E13E6D727@outlook.com",
-              },
-            },
+                address: "outlook_71587A5E13E6D727@outlook.com"
+              }
+            }
           },
           {
             "@odata.etag": 'W/"atlyxFpghUOabkKuwWMQlQADosigsg=="',
@@ -33,34 +33,34 @@ describe("normalizeMicrosoftEvents", () => {
             subject: "test2",
             start: {
               dateTime: "2021-11-24T19:30:00.0000000",
-              timeZone: "UTC",
+              timeZone: "UTC"
             },
             end: {
               dateTime: "2021-11-24T20:00:00.0000000",
-              timeZone: "UTC",
+              timeZone: "UTC"
             },
             organizer: {
               emailAddress: {
                 name: "Максим Азаров",
-                address: "outlook_71587A5E13E6D727@outlook.com",
-              },
-            },
-          },
-        ],
+                address: "outlook_71587A5E13E6D727@outlook.com"
+              }
+            }
+          }
+        ]
       })
     ).deep.equals([
       {
         id: "AQMkADAwATNiZmYAZC0wY2VjLTRjYwA3LTAwAi0wMAoARgAAA-gqP5-QQnRCroqL2oeluDIHAGrZcsRaYIVDmm5CrsFjEJUAAAIBDQAAAGrZcsRaYIVDmm5CrsFjEJUAA6LPIqIAAAA=",
         subject: "test",
         start: { dateTime: "2021-11-24T19:00:00.0000000", timeZone: "UTC" },
-        end: { dateTime: "2021-11-24T19:30:00.0000000", timeZone: "UTC" },
+        end: { dateTime: "2021-11-24T19:30:00.0000000", timeZone: "UTC" }
       },
       {
         id: "AQMkADAwATNiZmYAZC0wY2VjLTRjYwA3LTAwAi0wMAoARgAAA-gqP5-QQnRCroqL2oeluDIHAGrZcsRaYIVDmm5CrsFjEJUAAAIBDQAAAGrZcsRaYIVDmm5CrsFjEJUAA6LPIqMAAAA=",
         subject: "test2",
         start: { dateTime: "2021-11-24T19:30:00.0000000", timeZone: "UTC" },
-        end: { dateTime: "2021-11-24T20:00:00.0000000", timeZone: "UTC" },
-      },
+        end: { dateTime: "2021-11-24T20:00:00.0000000", timeZone: "UTC" }
+      }
     ]);
   });
 });

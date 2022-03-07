@@ -1,19 +1,19 @@
 import axios, { AxiosResponse } from "axios";
 import Moment from "moment";
 import { compose } from "ramda";
-import splitRangeByDays from "../../utils/splitRangeByDays";
-import { IGoogleEvent } from "../types";
+import dotenv from "dotenv";
 import normalizeGoogleEvents from "./normalizeEvents";
 import paginateOverRanges from "./../../utils/paginateOverRange";
-import dotenv from "dotenv";
+import splitRangeByDays from "../../utils/splitRangeByDays";
+import { IGoogleEvent } from "../types";
 
 const getGoogleCalendarsList = (accessToken: string) => {
   return axios.get(
-    `https://www.googleapis.com/calendar/v3/users/me/calendarList`,
+    "https://www.googleapis.com/calendar/v3/users/me/calendarList",
     {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     }
   );
 };
@@ -48,11 +48,11 @@ const getGoogleCalendarEvents = (
           .format("YYYY-MM-DD[T]10:00:00[Z]"),
         timeMax: Moment(endTime)
           .add(1, "d")
-          .format("YYYY-MM-DD[T]00:00:00-12:00"),
+          .format("YYYY-MM-DD[T]00:00:00-12:00")
       },
       headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     }
   );
 };
@@ -72,14 +72,14 @@ const createGoogleEvent = (accessToken: string, options: Options) => {
     // attendees,
     subject,
     startTime,
-    endTime,
+    endTime
     // timeZone,
   } = options;
   return axios({
     method: "POST",
     url: `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?sendUpdates=all`,
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`
     },
     data: {
       guestsCanModify: true,
@@ -90,21 +90,21 @@ const createGoogleEvent = (accessToken: string, options: Options) => {
       description,
       start: {
         dateTime: new Date(startTime).toISOString(),
-        timeZone: "Europe/Kiev",
+        timeZone: "Europe/Kiev"
       },
       end: {
         dateTime: new Date(endTime).toISOString(),
-        timeZone: "Europe/Kiev",
+        timeZone: "Europe/Kiev"
       },
-      visibility: "public",
-    },
+      visibility: "public"
+    }
   });
 };
 
 const cancelGoogleEvent = ({
   accessToken,
   eventId,
-  calendarId,
+  calendarId
 }: {
   accessToken: string;
   eventId: string;
@@ -114,18 +114,18 @@ const cancelGoogleEvent = ({
     method: "PATCH",
     url: `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}?sendUpdates=all`,
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`
     },
     data: {
-      status: "cancelled",
-    },
+      status: "cancelled"
+    }
   });
 };
 
 export const deleteGoogleEvent = ({
   accessToken,
   eventId,
-  calendarId = "primary",
+  calendarId = "primary"
 }: {
   accessToken: string;
   eventId: string;
@@ -135,8 +135,8 @@ export const deleteGoogleEvent = ({
     method: "DELETE",
     url: `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}`,
     headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+      Authorization: `Bearer ${accessToken}`
+    }
   });
 };
 
@@ -149,29 +149,29 @@ const updateTimeAndApprove = (settings: any) => {
     end_time,
     guestEmail,
     organizerEmail,
-    timeZone,
+    timeZone
   } = settings;
 
   return axios({
     method: "PATCH",
     url: `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}?sendUpdates=all`,
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`
     },
     data: {
       attendees: [
         { email: organizerEmail, responseStatus: "accepted" },
-        { email: guestEmail, responseStatus: "accepted" },
+        { email: guestEmail, responseStatus: "accepted" }
       ],
       start: {
         dateTime: new Date(start_time).toISOString(),
-        timeZone: timeZone || "Europe/Kiev",
+        timeZone: timeZone || "Europe/Kiev"
       },
       end: {
         dateTime: new Date(end_time).toISOString(),
-        timeZone: timeZone || "Europe/Kiev",
-      },
-    },
+        timeZone: timeZone || "Europe/Kiev"
+      }
+    }
   });
 };
 
@@ -189,7 +189,7 @@ const updateGoogleEvent = (
     method: "PATCH",
     url: `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}?sendUpdates=all`,
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`
     },
     data: {
       // attendees: [{ email: 'vitadrapaliuk@gmail.com', responseStatus: 'declined' }],
@@ -197,15 +197,15 @@ const updateGoogleEvent = (
       // attendees: [{ email: 'vitadrapaliuk@gmail.com', responseStatus: 'needsAction' }],
       start: {
         dateTime: new Date(start_time).toISOString(),
-        timeZone: timeZone || "Europe/Kiev",
+        timeZone: timeZone || "Europe/Kiev"
       },
       end: {
         dateTime: new Date(end_time).toISOString(),
-        timeZone: timeZone || "Europe/Kiev",
+        timeZone: timeZone || "Europe/Kiev"
       },
       description,
-      summary,
-    },
+      summary
+    }
   });
 };
 
@@ -228,5 +228,5 @@ export {
   updateTimeAndApprove,
   cancelGoogleEvent,
   createGoogleEvent,
-  getGoogleCalendarEvents,
+  getGoogleCalendarEvents
 };

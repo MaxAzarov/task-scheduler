@@ -12,9 +12,9 @@ export const getUsersAvailableIntegrations = async (
   try {
     const integrations = await Integration.findAll({
       where: {
-        user_id: id,
+        user_id: id
       },
-      attributes: ["type"],
+      attributes: ["type"]
     });
 
     return res.json(integrations);

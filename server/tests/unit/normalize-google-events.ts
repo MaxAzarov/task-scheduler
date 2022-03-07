@@ -27,22 +27,22 @@ describe("normalizeGoogleEvents", () => {
           organizer: { email: "volodor05412@gmail.com", self: true },
           start: {
             dateTime: "2020-02-02T22:00:00+02:00",
-            timeZone: "Europe/Kiev",
+            timeZone: "Europe/Kiev"
           },
           end: {
             dateTime: "2020-02-02T22:30:00+02:00",
-            timeZone: "Europe/Kiev",
+            timeZone: "Europe/Kiev"
           },
           recurrence: ["RRULE:FREQ=DAILY"],
           iCalUID: "205B327E-9D0F-4E54-BA4F-35136F1BB007",
           sequence: 0,
           reminders: {
             useDefault: false,
-            overrides: [{ method: "popup", minutes: 15 }],
+            overrides: [{ method: "popup", minutes: 15 }]
           },
-          eventType: "default",
-        },
-      ],
+          eventType: "default"
+        }
+      ]
     };
 
     expect(normalizeGoogleEvents(data)).deep.equals([
@@ -51,11 +51,11 @@ describe("normalizeGoogleEvents", () => {
         subject: "Слова",
         start: {
           dateTime: "2020-02-02T22:00:00+02:00",
-          timeZone: "Europe/Kiev",
+          timeZone: "Europe/Kiev"
         },
         end: { dateTime: "2020-02-02T22:30:00+02:00", timeZone: "Europe/Kiev" },
-        link: "https://www.google.com/calendar/event?eid=XzY4bzNhZ2hqNjhya2FiOXA4Z280Y2I5azhrcWo4YmEyODRxNGNiOWo2a29qNmRpNjY1MTQ0YzFnNnNfMjAyMDAyMDJUMjAwMDAwWiB2b2xvZG9yMDU0MTJAbQ",
-      },
+        link: "https://www.google.com/calendar/event?eid=XzY4bzNhZ2hqNjhya2FiOXA4Z280Y2I5azhrcWo4YmEyODRxNGNiOWo2a29qNmRpNjY1MTQ0YzFnNnNfMjAyMDAyMDJUMjAwMDAwWiB2b2xvZG9yMDU0MTJAbQ"
+      }
     ]);
   });
 });

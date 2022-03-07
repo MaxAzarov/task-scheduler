@@ -1,6 +1,6 @@
-import splitRangeByDays from "../../utils/splitRangeByDays";
 import Moment from "moment";
 import { expect } from "chai";
+import splitRangeByDays from "../../utils/splitRangeByDays";
 
 describe("splitRangeByDays", () => {
   const startTime = "2021-12-10";
@@ -11,6 +11,6 @@ describe("splitRangeByDays", () => {
     { startDate: "2021-12-16", endDate: "2021-12-18" },
     { startDate: "2021-12-19", endDate: "2021-12-21" },
     { startDate: "2021-12-22", endDate: "2021-12-24" },
-    { startDate: "2021-12-25", endDate: "2021-12-25" },
+    { startDate: "2021-12-25", endDate: "2021-12-25" }
   ]);
 });

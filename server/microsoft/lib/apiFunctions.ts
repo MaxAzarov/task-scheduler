@@ -1,10 +1,10 @@
 import axios, { AxiosResponse } from "axios";
-import { IMicrosoftEvent } from "../types";
 import Moment from "moment";
 import { compose } from "ramda";
-import splitRangeByDays from "../../utils/splitRangeByDays";
 import normalizeMicrosoftEvents from "./normalizeEvents";
 import paginateOverRanges from "./../../utils/paginateOverRange";
+import splitRangeByDays from "../../utils/splitRangeByDays";
+import { IMicrosoftEvent } from "../types";
 import { DATE_FORMAT_API } from "../../constants/services";
 
 export async function* getMicrosoftEvents(
@@ -27,7 +27,7 @@ export const getMicrosoftCalendarEvents = async (
   // &$top=25&startDateTime=2021-05-29T21:00:00Z&endDateTime=2021-06-05T21:00:00Z
   // `https://graph.microsoft.com/v1.0/me/calendarview?$select=subject,organizer,start,end&$orderby=start/dateTime&startDateTime=2021-11-23T21:00:00Z&endDateTime=2021-11-29T21:00:00Z`,
   return axios.get(
-    `https://graph.microsoft.com/v1.0/me/calendarview?$select=subject,organizer,start,end&$orderby=start/dateTime`,
+    "https://graph.microsoft.com/v1.0/me/calendarview?$select=subject,organizer,start,end&$orderby=start/dateTime",
     {
       params: {
         // startDateTime: "2021-11-23T21:00:00Z",
@@ -35,11 +35,11 @@ export const getMicrosoftCalendarEvents = async (
         startDateTime: Moment(startTime).format("YYYY-MM-DD[T]12:mm:ss[Z]"),
         endDateTime: Moment(endTime)
           .add(1, "d")
-          .format("YYYY-MM-DD[T]12:mm:ss[Z]"),
+          .format("YYYY-MM-DD[T]12:mm:ss[Z]")
       },
       headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     }
   );
 };
@@ -49,8 +49,8 @@ export const getMe = async (accessToken: string) => {
     "https://graph.microsoft.com/v1.0/me?$select=displayName,mail,mailboxSettings,userPrincipalName",
     {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     }
   );
 };
@@ -71,25 +71,25 @@ export const createMicrosoftEvent = async (
     subject,
     body: {
       contentType: "HTML",
-      content: description,
+      content: description
     },
     start: {
       dateTime: Moment(startTime, DATE_FORMAT_API).format("YYYY-MM-DD[T]HH:mm"),
-      timeZone: "FLE Standard Time",
+      timeZone: "FLE Standard Time"
     },
     end: {
       dateTime: Moment(endTime, DATE_FORMAT_API).format("YYYY-MM-DD[T]HH:mm"),
-      timeZone: "FLE Standard Time",
-    },
+      timeZone: "FLE Standard Time"
+    }
   };
   return axios({
     method: "POST",
-    url: `https://graph.microsoft.com/v1.0/me/events`,
+    url: "https://graph.microsoft.com/v1.0/me/events",
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-type": "application/json",
+      "Content-type": "application/json"
     },
-    data,
+    data
   });
 };
 
@@ -103,16 +103,16 @@ export const updateMicrosoftEvent = async (
     url: `https://graph.microsoft.com/v1.0/me/events/${eventID}`,
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-type": "application/json",
+      "Content-type": "application/json"
     },
-    data: updatedEvent,
+    data: updatedEvent
   });
 };
 
 export const cancelMicrosoftEvent = async ({
   accessToken,
   eventId,
-  calendarId,
+  calendarId
 }: {
   accessToken: string;
   eventId: string;
@@ -123,14 +123,14 @@ export const cancelMicrosoftEvent = async ({
     url: `https://graph.microsoft.com/v1.0/me/events/${eventId}/cancel`,
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-type": "application/json",
-    },
+      "Content-type": "application/json"
+    }
   });
 };
 
 export const deleteMicrosoftEvent = async ({
   accessToken,
-  eventId,
+  eventId
 }: {
   accessToken: string;
   eventId: string;
@@ -140,8 +140,8 @@ export const deleteMicrosoftEvent = async ({
     method: "DELETE",
     url: `https://graph.microsoft.com/v1.0/me/events/${eventId}`,
     headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+      Authorization: `Bearer ${accessToken}`
+    }
   });
 };
 
@@ -154,9 +154,9 @@ export const acceptEvent = async (
     method: "POST",
     url: `https://graph.microsoft.com/v1.0/me/events/${eventID}/accept`,
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`
     },
-    data: body,
+    data: body
   });
 };
 
@@ -169,9 +169,9 @@ export const rejectEvent = async (
     method: "POST",
     url: `https://graph.microsoft.com/v1.0/me/events/${eventID}/decline`,
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`
     },
-    data: body,
+    data: body
   });
 };
 
@@ -198,9 +198,9 @@ export const getNewMicrosoftAccessToken = async (
 
   const config = {
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/x-www-form-urlencoded"
       // Origin: "http://localhost:5000/",
-    },
+    }
   };
   const response = axios.post(
     "https://login.microsoftonline.com/common/oauth2/v2.0/token",

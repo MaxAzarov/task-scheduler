@@ -8,7 +8,7 @@ const normalizeGoogleEvent = (data: IGoogleEvent["items"][0]): Event => {
     subject: summary,
     start,
     end,
-    link: htmlLink,
+    link: htmlLink
   };
 };
 

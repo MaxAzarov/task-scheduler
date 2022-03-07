@@ -7,7 +7,7 @@ const moment = extendMoment(Moment as any);
 
 const formatRange = (range: Moment.Moment[]) => ({
   startDate: head(range)?.format(DATE_FORMAT),
-  endDate: last(range)?.format(DATE_FORMAT),
+  endDate: last(range)?.format(DATE_FORMAT)
 });
 
 const splitEvery = curry((sliceLengh: number, list: unknown[]) => {

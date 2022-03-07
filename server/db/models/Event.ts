@@ -7,14 +7,14 @@ import {
   Default,
   ForeignKey,
   BelongsTo,
-  PrimaryKey,
+  PrimaryKey
 } from "sequelize-typescript";
 import Integration from "./Integration";
 import User from "./User";
 
 @Table({
   timestamps: true,
-  tableName: `Event`,
+  tableName: "Event"
 })
 class Event extends Model<Event> {
   @PrimaryKey
@@ -46,8 +46,8 @@ class Event extends Model<Event> {
 
   @BelongsTo(() => Integration, {
     foreignKey: {
-      allowNull: true,
-    },
+      allowNull: true
+    }
   })
   integration!: Integration;
 

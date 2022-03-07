@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { Readable } from "stream";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
+import { Readable } from "stream";
 import { DATE_FORMAT, Services } from "../../../constants/services";
 import { Integration, User, Event } from "../../../db/sequelize";
 import connectionSchema from "../../../integrations/ConnectionSchema";
@@ -19,16 +19,17 @@ export const SynchronizeCalendar = async (
   try {
     const integrations: Integration[] = await Integration.findAll({
       where: {
-        user_id: id,
-      },
+        user_id: id
+      }
     });
 
     await Event.destroy({
       where: {
-        user_id: id,
-      },
+        user_id: id
+      }
     });
 
+    // eslint-disable-next-line no-inner-declarations
     async function* getAllEvents() {
       for (let i = 0; i < integrations.length; i++) {
         const events: any[] = [];
@@ -38,8 +39,8 @@ export const SynchronizeCalendar = async (
         const integration = await Integration.findOne({
           where: {
             user_id: id,
-            type: item.type,
-          },
+            type: item.type
+          }
         });
 
         let data: any = [];
@@ -87,12 +88,12 @@ export const SynchronizeCalendar = async (
             await Integration.update(
               {
                 access_token: token?.data.access_token,
-                refresh_token: token?.data.refresh_token,
+                refresh_token: token?.data.refresh_token
               },
               {
                 where: {
-                  user_id: id,
-                },
+                  user_id: id
+                }
               }
             );
           }
@@ -107,7 +108,7 @@ export const SynchronizeCalendar = async (
             where: {
               event_id: events[i].id,
               start_time: moment.utc(events[i].start.dateTime).valueOf(),
-              end_time: moment.utc(events[i].end.dateTime).valueOf(),
+              end_time: moment.utc(events[i].end.dateTime).valueOf()
             },
             defaults: {
               subject: events[i].subject,
@@ -116,8 +117,8 @@ export const SynchronizeCalendar = async (
               user_id: id,
               integration_id: integration?.id,
               body: "",
-              event_id: events[i].id,
-            },
+              event_id: events[i].id
+            }
           } as any);
         }
 
@@ -125,8 +126,8 @@ export const SynchronizeCalendar = async (
       }
     }
 
-    let allEvents: any = [];
-    for await (let events of getAllEvents()) {
+    const allEvents: any = [];
+    for await (const events of getAllEvents()) {
       allEvents.push(...events);
     }
 
@@ -146,8 +147,8 @@ export const getAllEvents = async (
   try {
     const events = await Event.findAll({
       where: {
-        user_id: id,
-      },
+        user_id: id
+      }
     });
 
     return res.json(events);
@@ -167,8 +168,8 @@ export const CreateEvents = async (
   try {
     const integrations: Integration[] = await Integration.findAll({
       where: {
-        user_id: userId,
-      },
+        user_id: userId
+      }
     });
 
     if (types.length == 0) {
@@ -178,7 +179,7 @@ export const CreateEvents = async (
         end_time: moment(endTime).valueOf(),
         user_id: userId,
         body: "",
-        event_id: uuidv4(),
+        event_id: uuidv4()
       } as any);
 
       await newEvent.save();
@@ -197,7 +198,7 @@ export const CreateEvents = async (
             description,
             endTime,
             startTime,
-            subject,
+            subject
           }
         );
 
@@ -207,7 +208,7 @@ export const CreateEvents = async (
           end,
           id: eventId,
           start,
-          subject: normalizedSubject,
+          subject: normalizedSubject
         } = normalizedEvent;
 
         const newEvent = new Event({
@@ -217,7 +218,7 @@ export const CreateEvents = async (
           user_id: userId,
           integration_id: id,
           body: "",
-          event_id: eventId,
+          event_id: eventId
         } as any);
 
         await newEvent.save();
@@ -231,7 +232,7 @@ export const CreateEvents = async (
               description,
               endTime,
               startTime,
-              subject,
+              subject
             }
           );
 
@@ -241,7 +242,7 @@ export const CreateEvents = async (
             end,
             id: eventId,
             start,
-            subject: normalizedSubject,
+            subject: normalizedSubject
           } = normalizedEvent;
 
           const newEvent = new Event({
@@ -251,7 +252,7 @@ export const CreateEvents = async (
             user_id: userId,
             integration_id: id,
             body: "",
-            event_id: eventId,
+            event_id: eventId
           } as any);
 
           await newEvent.save();
@@ -279,8 +280,8 @@ export const DeleteEvent = async (
   const event = await Event.findOne({
     where: {
       user_id: id,
-      event_id: eventId,
-    },
+      event_id: eventId
+    }
   });
 
   let integration;
@@ -288,15 +289,15 @@ export const DeleteEvent = async (
   if (event?.integration_id) {
     integration = await Integration.findOne({
       where: {
-        id: event?.integration_id,
-      },
+        id: event?.integration_id
+      }
     });
   } else {
     await Event.destroy({
       where: {
         user_id: id,
-        event_id: eventId,
-      },
+        event_id: eventId
+      }
     });
 
     return res.json({ status: "ok" });
@@ -306,8 +307,8 @@ export const DeleteEvent = async (
     await Event.destroy({
       where: {
         user_id: id,
-        event_id: eventId,
-      },
+        event_id: eventId
+      }
     });
   } catch (e) {
     return next(ApiError.internal("Can not delete event "));
@@ -317,7 +318,7 @@ export const DeleteEvent = async (
   try {
     await connectionSchema[key].deleteEvent({
       accessToken: integration?.access_token as string,
-      eventId: event?.event_id as string,
+      eventId: event?.event_id as string
     });
   } catch (e) {
     let token;
@@ -337,7 +338,7 @@ export const DeleteEvent = async (
     try {
       await connectionSchema[key].deleteEvent({
         accessToken: token.data?.access_token as string,
-        eventId: eventId,
+        eventId: eventId
       });
     } catch (e: any) {
       return next(ApiError.badRequest("Internal error"));

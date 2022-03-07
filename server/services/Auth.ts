@@ -1,15 +1,17 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+
 const { JWT_SECRET = "secret" } = process.env;
 
 class AuthService {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor() {}
 
   issueToken(email: string, id: number): string {
     const token = jwt.sign(
       {
         email: email,
-        id: id,
+        id: id
       },
       JWT_SECRET,
       { expiresIn: "1h" }

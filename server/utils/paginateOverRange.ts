@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { curry, path } from "ramda";
 const getData = path(["data"]);
 

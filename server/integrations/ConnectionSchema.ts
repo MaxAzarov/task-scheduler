@@ -4,7 +4,7 @@ import {
   deleteGoogleEvent,
   getGoogleEvents,
   getNewAccessToken,
-  updateGoogleEvent,
+  updateGoogleEvent
 } from "../google/lib/apiFunctions";
 import normalizeGoogleEvent from "../google/lib/normalizeEvent";
 import normalizeGoogleEvents from "../google/lib/normalizeEvents";
@@ -15,7 +15,7 @@ import {
   deleteMicrosoftEvent,
   getMicrosoftEvents,
   getNewMicrosoftAccessToken,
-  updateMicrosoftEvent,
+  updateMicrosoftEvent
 } from "../microsoft/lib/apiFunctions";
 import normalizeMicrosoftEvent from "../microsoft/lib/normalizeEvent";
 import normalizeMicrosoftEvents from "../microsoft/lib/normalizeEvents";
@@ -29,7 +29,7 @@ const connectionSchema = {
     cancelEvent: cancelMicrosoftEvent,
     normalizeEvents: normalizeMicrosoftEvents,
     normalize: normalizeMicrosoftEvent,
-    deleteEvent: deleteMicrosoftEvent,
+    deleteEvent: deleteMicrosoftEvent
   },
   googleCalendar: {
     createEvent: createGoogleEvent,
@@ -39,8 +39,8 @@ const connectionSchema = {
     cancelEvent: cancelGoogleEvent,
     normalizeEvents: normalizeGoogleEvents,
     normalize: normalizeGoogleEvent,
-    deleteEvent: deleteGoogleEvent,
-  },
+    deleteEvent: deleteGoogleEvent
+  }
 };
 
 export default connectionSchema;
