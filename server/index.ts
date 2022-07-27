@@ -3,8 +3,11 @@ import passport from "passport";
 import cors from "cors";
 import dotenv from "dotenv";
 import session from "express-session";
+import fetch from "node-fetch";
 import microsoftAuthRouter from "./microsoft";
 import googleAuthRouter from "./google";
+import trelloAuthRouter from "./trello";
+import jiraAuthRouter from "./jira";
 import db from "./db/sequelize";
 import authRouter from "./routes/public/auth";
 import eventsRouter from "./routes/private/events";
@@ -33,6 +36,8 @@ app.use(passport.session());
 
 app.use("/microsoft", microsoftAuthRouter);
 app.use("/google", googleAuthRouter);
+app.use("/trello", trelloAuthRouter);
+app.use("/jira", jiraAuthRouter);
 app.use("/auth", authRouter);
 app.use("/events", checkJWT, eventsRouter);
 app.use("/user", checkJWT, userRouter);
@@ -62,6 +67,22 @@ const errorHandler = (
 };
 
 app.use(errorHandler);
+
+// fetch("https://maxazarov.atlassian.net/rest/api/3/project/search", {
+//   method: "GET",
+//   headers: {
+//     Authorization: `Basic ${Buffer.from(
+//       "volodor05412@gmail.com:eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik16bERNemsxTVRoRlFVRTJRa0ZGT0VGRk9URkJOREJDTVRRek5EZzJSRVpDT1VKRFJrVXdNZyJ9.eyJodHRwczovL2F0bGFzc2lhbi5jb20vb2F1dGhDbGllbnRJZCI6IlE2UWJvbUs2UVlWa3B1MXhWMWkwenM5T3pvNjIwWWxzIiwiaHR0cHM6Ly9hdGxhc3NpYW4uY29tL2VtYWlsRG9tYWluIjoiZ21haWwuY29tIiwiaHR0cHM6Ly9hdGxhc3NpYW4uY29tL3N5c3RlbUFjY291bnRJZCI6IjYyMjY1MjUxMTRjZDI0MDA2OTBhYmUwMiIsImh0dHBzOi8vYXRsYXNzaWFuLmNvbS9zeXN0ZW1BY2NvdW50RW1haWxEb21haW4iOiJjb25uZWN0LmF0bGFzc2lhbi5jb20iLCJodHRwczovL2F0bGFzc2lhbi5jb20vdmVyaWZpZWQiOnRydWUsImh0dHBzOi8vYXRsYXNzaWFuLmNvbS9maXJzdFBhcnR5IjpmYWxzZSwiaHR0cHM6Ly9hdGxhc3NpYW4uY29tLzNsbyI6dHJ1ZSwiaXNzIjoiaHR0cHM6Ly9hdGxhc3NpYW4tYWNjb3VudC1wcm9kLnB1czIuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDVkZDcwYzA1OWQ3OWFkMGVmNTNhNDJiMSIsImF1ZCI6ImFwaS5hdGxhc3NpYW4uY29tIiwiaWF0IjoxNjQ2NzQ3NDgwLCJleHAiOjE2NDY3NTEwODAsImF6cCI6IlE2UWJvbUs2UVlWa3B1MXhWMWkwenM5T3pvNjIwWWxzIiwic2NvcGUiOiJyZWFkOmlzc3VlOmppcmEtc29mdHdhcmUgcmVhZDppc3N1ZTpqaXJhIHJlYWQ6cHJvamVjdDpqaXJhIHJlYWQ6dXNlcjpqaXJhIHJlYWQ6dXNlci5wcm9wZXJ0eTpqaXJhIn0.Un43JJAq12APx55-g0SLzquJSRzaYmsLxM4bvjMY3-x4O38_kFD_WVensYIIt69MmQJEGJD2cKDujNYxdLPrAiX-tyuvBUdBQY-1elxoZ3cTxnJlbNbWAPUHLfU7X3CWMo0_pEQbWdqUq_PiAyWkpmDO60kn1BV4_ZQnothN8jG2V4ugS03BYnoDwJigM66H8JZhob9O6d_tjG0MB5Qpfw89UX7Lzwsp1jX3_vaYG7uCPISO6LFCk78oIvCXi_zlkoKAb08F34lkHFtiYL8sBO1ib5yYxR1aJxv4pdolX_VXCZUWkXEY35lOwLHVhgVkkdT3Tjce9r2IIED2CbM-Qg"
+//     ).toString("base64")}`,
+//     Accept: "application/json"
+//   }
+// })
+//   .then((response) => {
+//     console.log(`Response: ${response.status} ${response.statusText}`);
+//     return response.text();
+//   })
+//   .then((text) => console.log(text))
+//   .catch((err) => console.error(err));
 
 db.authenticate()
   .then(() => {

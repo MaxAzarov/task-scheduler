@@ -7,7 +7,7 @@ import { AuthAPI } from "../../components/api/auth";
 import MicrosoftButton from "../../components/common/Buttons/MicrosoftButton/MicrosoftButton";
 import GoogleButton from "../../components/common/Buttons/GoogleButton/GoogleButton";
 import useAuth from "../../customHooks/useAuth";
-import "antd/dist/antd.css";
+import "antd/dist/antd.less";
 import "./Login.scss";
 
 const Login = () => {

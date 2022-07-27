@@ -123,7 +123,7 @@ const Dashboard = (): JSX.Element => {
           defaultView={Views.WEEK}
           scrollToTime={new Date(1970, 1, 1, 6)}
           defaultDate={new Date()}
-          onSelectEvent={(event) => {
+          onSelectEvent={(event: any) => {
             setActiveEvent(event);
             setIsInfoModalOpen(true);
           }}

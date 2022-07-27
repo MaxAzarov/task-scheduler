@@ -4,8 +4,12 @@
   "description": "Schedule Task program",
   "main": "index.js",
   "dependencies": {
+    "@types/react-big-calendar": "^0.38.1",
     "concurrently": "^6.3.0",
-    "ramda": "^0.27.1",
+    "node-fetch": "^3.2.9",
+    "oauth": "^0.9.15",
+    "passport-trello": "^0.1.5",
+    "ramda": "^0.28.0",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {

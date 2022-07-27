@@ -3,7 +3,7 @@ import { Form, Input, Button } from "antd";
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { AuthAPI } from "../../components/api/auth";
-import "antd/dist/antd.css";
+import "antd/dist/antd.less";
 import "./Register.scss";
 import useLocalStorage from "../../customHooks/useLocalStorage";
 import MicrosoftButton from "../../components/common/Buttons/MicrosoftButton/MicrosoftButton";

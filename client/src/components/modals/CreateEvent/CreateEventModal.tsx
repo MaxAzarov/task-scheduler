@@ -63,7 +63,7 @@ const CreateEvent = ({
   });
 
   const addOrRemoveIntegration = useCallback(
-    (type) => {
+    (type: any) => {
       if (selectedIntegrations.includes(type)) {
         setSelectedIntegrations((prev) => prev.filter((i) => i !== type));
       } else {
@@ -126,10 +126,10 @@ const CreateEvent = ({
 
       <RangePicker
         showTime
-        defaultValue={[
-          moment(dateRange.start, DATE_FORMAT_API),
-          moment(dateRange.end, DATE_FORMAT_API),
-        ]}
+        // defaultValue={[
+        //   moment(dateRange.start, DATE_FORMAT_API),
+        //   moment(dateRange.end, DATE_FORMAT_API),
+        // ]}
         onChange={([start, end]: any) =>
           setRange({
             start: start,
