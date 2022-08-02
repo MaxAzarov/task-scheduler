@@ -1,20 +1,12 @@
 import { map, path } from "ramda";
+import normalizeGoogleEvent from "./normalizeEvent";
 import { Event } from "../../integrations/types";
 import { IGoogleEvent } from "../types";
 
-const normalizeGoogleEvents = (data: IGoogleEvent): Event[] => {
-  const items = path(["items"], data);
+const normalizeGoogleEvents = (events: IGoogleEvent): Event[] => {
+  const items = path(["items"], events);
 
-  return map((item) => {
-    const { id, summary, start, end, htmlLink } = item;
-    return {
-      id,
-      subject: summary,
-      start,
-      end,
-      link: htmlLink
-    };
-  }, items);
+  return map(normalizeGoogleEvent, items);
 };
 
 export default normalizeGoogleEvents;

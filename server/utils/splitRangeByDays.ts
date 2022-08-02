@@ -11,7 +11,7 @@ const formatRange = (range: Moment.Moment[]) => ({
 });
 
 const splitEvery = curry((sliceLengh: number, list: unknown[]) => {
-  const result: any[] = [];
+  const result: unknown[] = [];
 
   for (let i = 0; i < list.length; i += sliceLengh) {
     result.push(list.slice(i, i + sliceLengh));

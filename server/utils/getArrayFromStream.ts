@@ -2,7 +2,7 @@ import { Readable } from "stream";
 
 const getArrayFromStream = (stream: Readable) => {
   return new Promise((resolve, reject) => {
-    const array: any = [];
+    const array: unknown[] = [];
     stream.on("data", (data) => {
       array.push(data);
     });

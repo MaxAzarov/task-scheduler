@@ -1,0 +1,9 @@
+{
+  "watch": ["*.ts"],
+  "ext": "ts",
+  "ignore": ["*.test.ts", "node_modules"],
+  "delay": "1",
+  "execMap": {
+    "ts": "ts-node"
+  }
+}

@@ -3,7 +3,8 @@ import passport from "passport";
 import cors from "cors";
 import dotenv from "dotenv";
 import session from "express-session";
-import fetch from "node-fetch";
+import log from "./logger";
+// import fetch from "node-fetch";
 import microsoftAuthRouter from "./microsoft";
 import googleAuthRouter from "./google";
 import trelloAuthRouter from "./trello";
@@ -87,10 +88,13 @@ app.use(errorHandler);
 db.authenticate()
   .then(() => {
     app.listen(5000, () => {
-      console.log("🚀 Server ready at http://localhost:5000");
+      log.info("🚀 Server ready at http://localhost:5000");
     });
   })
   .catch((e) => {
-    console.log("e: ", e);
-    console.log("can not connect to db!");
+    log.error("Can not connect to db! Reason: ", e);
   });
+
+process.on("uncaughtException", (e) => {
+  log.error("Uncaught Expection " + e.message);
+});

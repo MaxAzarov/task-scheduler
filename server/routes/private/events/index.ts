@@ -1,16 +1,16 @@
 import { Router } from "express";
 import {
-  SynchronizeCalendar,
+  synchronizeCalendar,
   getAllEvents,
   CreateEvents,
-  DeleteEvent
+  deleteEvent
 } from "./controller";
 
-const router = Router();
+const router: Router = Router();
 
 router.post("/create", CreateEvents);
-router.get("/synchronize", SynchronizeCalendar);
+router.get("/synchronize", synchronizeCalendar);
 router.get("/", getAllEvents);
-router.delete("/:eventId", DeleteEvent);
+router.delete("/:eventId", deleteEvent);
 
 export default router;

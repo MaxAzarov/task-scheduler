@@ -9,7 +9,7 @@ import getArrayFromStream from "../../../utils/getArrayFromStream";
 import ApiError from "../../../error/apiError";
 import { getKeyByValue } from "../../../utils/getKeyByValue";
 
-export const SynchronizeCalendar = async (
+export const synchronizeCalendar = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -18,16 +18,10 @@ export const SynchronizeCalendar = async (
 
   try {
     const integrations: Integration[] = await Integration.findAll({
-      where: {
-        user_id: id
-      }
+      where: { user_id: id }
     });
 
-    await Event.destroy({
-      where: {
-        user_id: id
-      }
-    });
+    await Event.destroy({ where: { user_id: id } });
 
     // eslint-disable-next-line no-inner-declarations
     async function* getAllEvents() {
@@ -268,7 +262,7 @@ export const CreateEvents = async (
   }
 };
 
-export const DeleteEvent = async (
+export const deleteEvent = async (
   req: Request,
   res: Response,
   next: NextFunction
