@@ -8,7 +8,8 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:import/recommended",
     "plugin:import/errors",
-    "plugin:import/warnings"
+    "plugin:import/warnings",
+    "plugin:import/typescript"
   ],
   "rules": {
     "import/order": [
@@ -25,12 +26,26 @@
       }
     ],
     "quotes": [1, "double", { "avoidEscape": true }],
-    "import/no-unresolved": [2, { "caseSensitiveStrict": true }]
+    "import/extensions": "off",
+    "import/no-unresolved": "off"
+    // "import/no-unresolved": [2, { "caseSensitiveStrict": true }]
+    // "import/extensions": [
+    //   "error",
+    //   "ignorePackages",
+    //   {
+    //     "ts": "never"
+    //   }
+    // ]
   },
   "settings": {
     "import/resolver": {
+      "typescript": {},
       "node": {
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        // "moduleDirectory": ["node_modules", "routes/*"]
+        // "paths": ["."]
+        // "routes": ["routes", "./routes"]
+        // "routes": "./routes"
       }
     }
   },

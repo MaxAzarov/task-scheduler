@@ -1,8 +1,12 @@
+import "module-alias";
 import express, { NextFunction, Request, Response } from "express";
 import passport from "passport";
 import cors from "cors";
 import dotenv from "dotenv";
 import session from "express-session";
+import authRouter from "@routes/public/auth";
+
+// import authRouter from "./routes/public/auth";
 import log from "./logger";
 // import fetch from "node-fetch";
 import microsoftAuthRouter from "./microsoft";
@@ -10,7 +14,7 @@ import googleAuthRouter from "./google";
 import trelloAuthRouter from "./trello";
 import jiraAuthRouter from "./jira";
 import db from "./db/sequelize";
-import authRouter from "./routes/public/auth";
+// import authRouter from "./routes/public/auth";
 import eventsRouter from "./routes/private/events";
 import userRouter from "./routes/private/user";
 import ApiError from "./error/apiError";
@@ -85,9 +89,13 @@ app.use(errorHandler);
 //   .then((text) => console.log(text))
 //   .catch((err) => console.error(err));
 
+// const { PORT = 5000 } = process.env;
+
+const port = process.env.PORT ? +process.env.PORT : 5000;
+
 db.authenticate()
   .then(() => {
-    app.listen(5000, () => {
+    app.listen(port, () => {
       log.info("🚀 Server ready at http://localhost:5000");
     });
   })

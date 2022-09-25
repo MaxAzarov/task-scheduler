@@ -3,7 +3,8 @@ import passport from "passport";
 import { Strategy } from "passport-trello";
 // var OAuth = require("oauth").OAuth;
 import { OAuth } from "oauth";
-import fetch from "node-fetch";
+// import fetch from "node-fetch";
+// const fetch = await import("node-fetch");
 import url from "url";
 import crypto from "crypto";
 

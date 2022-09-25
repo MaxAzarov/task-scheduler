@@ -1,0 +1,36 @@
+version: "2.2"
+
+services:
+  server:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - OAUTH_APP_ID=${OAUTH_APP_ID}
+      - OAUTH_APP_PASSWORD=${OAUTH_APP_PASSWORD}
+      - OAUTH_REDIRECT_URI=${OAUTH_REDIRECT_URI}
+      - OAUTH_SCOPES=${OAUTH_SCOPES}
+      - OAUTH_AUTHORITY=${OAUTH_AUTHORITY}
+      - OAUTH_ID_METADATA=${OAUTH_ID_METADATA}
+      - OAUTH_AUTHORIZE_ENDPOINT=${OAUTH_AUTHORIZE_ENDPOINT}
+      - OAUTH_TOKEN_ENDPOINT=${OAUTH_TOKEN_ENDPOINT}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_CALLBACK_URL=${GOOGLE_CALLBACK_URL}
+      - TRELLO_ID=${TRELLO_ID}
+      - TRELLO_SECRET=${TRELLO_SECRET}
+      - TRELLO_CALLBACK=${TRELLO_CALLBACK}
+      - JWT_SECRET=${JWT_SECRET}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      # - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - NODE_ENV=${NODE_ENV}
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:5432"

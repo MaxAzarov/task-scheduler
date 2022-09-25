@@ -212,7 +212,7 @@ const updateGoogleEvent = (
 const getNewAccessToken = (
   refreshToken: string
 ): Promise<AxiosResponse<any, any>> => {
-  const CLIENT_ID = process.env.GOODLE_CLIENT_ID;
+  const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
   const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
   const REDIRECT_URI = process.env.GOOGLE_CALLBACK_URL;
 
